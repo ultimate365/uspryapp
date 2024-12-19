@@ -87,6 +87,8 @@ export default function ViewAdmission() {
     let ageMessage;
     if (validAge === years) {
       ageMessage = `Student is Valid (${validAge}Yrs), age is ${years} years, ${months} months, and ${days} days.`;
+    } else if (validAge - 1 === years && months >= 8) {
+      ageMessage = `Student is Valid (${validAge}Yrs), age is ${years} years, ${months} months, and ${days} days.`;
     } else {
       ageMessage = `Student is Invalid (${validAge}Yrs), age is ${years} years, ${months} months, and ${days} days.`;
     }
@@ -107,8 +109,8 @@ export default function ViewAdmission() {
             }))
             .sort(
               (a, b) =>
-                b.student_addmission_dateAndTime -
-                a.student_addmission_dateAndTime,
+                a.student_addmission_dateAndTime -
+                b.student_addmission_dateAndTime,
             );
           setAllData(data);
           setFilteredData(data);
@@ -374,7 +376,7 @@ export default function ViewAdmission() {
                 }}
               />
             </View>
-            {filteredData.reverse().map((student, index) => (
+            {filteredData.map((student, index) => (
               <View style={styles.dataView} key={index}>
                 <Text selectable style={styles.bankDataText}>
                   SL:{index + 1}
