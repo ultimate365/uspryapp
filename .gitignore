@@ -76,7 +76,7 @@ service_key.json
 google-services.json
 encryption.js
 notification.js
-constants.js
+# constants.js
 uploader.js
 databases/
 files/
