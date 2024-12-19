@@ -374,7 +374,7 @@ export default function ViewAdmission() {
                 }}
               />
             </View>
-            {filteredData.map((student, index) => (
+            {filteredData.reverse().map((student, index) => (
               <View style={styles.dataView} key={index}>
                 <Text selectable style={styles.bankDataText}>
                   SL:{index + 1}
