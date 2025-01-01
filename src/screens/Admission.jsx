@@ -93,7 +93,7 @@ export default function Admission() {
     student_previous_school: '',
     student_previous_student_id: '',
     student_addmission_date: todayInString(),
-    student_addmission_year: new Date().getFullYear(),
+    student_addmission_year: YEAR,
     student_addmission_dateAndTime: Date.now(),
   });
   const calculateAgeOnSameDay = (event, selectedDate) => {
@@ -571,7 +571,7 @@ export default function Admission() {
               student_previous_student_id:
                 inputField.student_previous_student_id,
               student_addmission_date: todayInString(),
-              student_addmission_year: new Date().getFullYear(),
+              student_addmission_year: YEAR,
               student_addmission_dateAndTime: Date.now(),
             };
             await firestore()
@@ -619,7 +619,7 @@ export default function Admission() {
                   student_previous_school: '',
                   student_previous_student_id: '',
                   student_addmission_date: todayInString(),
-                  student_addmission_year: new Date().getFullYear(),
+                  student_addmission_year: YEAR,
                   student_addmission_dateAndTime: Date.now(),
                 });
               })
@@ -1893,63 +1893,82 @@ export default function Admission() {
               }}></View>
             <CustomButton
               title={'Submit'}
+              size={'small'}
               color={'darkgreen'}
               onClick={() => submitData()}
             />
-            <CustomButton
-              title={'Clear'}
-              color={'darkred'}
-              onClick={async () => {
-                setInputField({
-                  id: '',
-                  url: '',
-                  photoName: '',
-                  student_beng_name: '',
-                  student_eng_name: '',
-                  father_beng_name: '',
-                  father_eng_name: '',
-                  mother_beng_name: '',
-                  mother_eng_name: '',
-                  guardian_beng_name: '',
-                  guardian_eng_name: '',
-                  student_birthday: `01-01-${new Date().getFullYear() - 5}`,
-                  student_gender: '',
-                  student_mobile: '',
-                  student_aadhaar: '',
-                  student_religion: '',
-                  student_race: 'GENERAL',
-                  student_bpl_status: 'NO',
-                  student_bpl_number: '',
-                  student_village: 'SEHAGORI',
-                  student_post_office: 'KHOROP',
-                  student_police_station: 'JOYPUR',
-                  student_pin_code: '711401',
-                  student_addmission_class: 'PRE PRIMARY',
-                  student_previous_class: 'FIRST TIME ADDMISSION',
-                  student_previous_class_year: '',
-                  student_previous_school: '',
-                  student_previous_student_id: '',
-                  student_addmission_date: todayInString(),
-                  student_addmission_year: new Date().getFullYear(),
-                  student_addmission_dateAndTime: Date.now(),
-                });
-                setAdmClassText('প্রাক প্রাথমিক');
-                setGenderText('লিঙ্গ বেছে নিন');
-                setReligionText('ধর্ম বেছে নিন');
-                setCastText('জাতি বেছে নিন');
-                setBplText('বি.পি.এল. কিনা?');
-                setReAdClassText('শ্রেণী বেছে নিন');
-                setPath('');
-                setImageName('');
-                await ImagePicker.clean()
-                  .then(() => {
-                    console.log('removed all tmp images from tmp directory');
-                  })
-                  .catch(e => {
-                    console.log(e);
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-evenly',
+                alignItems: 'center',
+                alignSelf:"center",
+                width: responsiveWidth(60)
+              }}>
+              <CustomButton
+                title={'Clear'}
+                color={'red'}
+                size={'xsmall'}
+                onClick={async () => {
+                  setInputField({
+                    id: '',
+                    url: '',
+                    photoName: '',
+                    student_beng_name: '',
+                    student_eng_name: '',
+                    father_beng_name: '',
+                    father_eng_name: '',
+                    mother_beng_name: '',
+                    mother_eng_name: '',
+                    guardian_beng_name: '',
+                    guardian_eng_name: '',
+                    student_birthday: `01-01-${new Date().getFullYear() - 5}`,
+                    student_gender: '',
+                    student_mobile: '',
+                    student_aadhaar: '',
+                    student_religion: '',
+                    student_race: 'GENERAL',
+                    student_bpl_status: 'NO',
+                    student_bpl_number: '',
+                    student_village: 'SEHAGORI',
+                    student_post_office: 'KHOROP',
+                    student_police_station: 'JOYPUR',
+                    student_pin_code: '711401',
+                    student_addmission_class: 'PRE PRIMARY',
+                    student_previous_class: 'FIRST TIME ADDMISSION',
+                    student_previous_class_year: '',
+                    student_previous_school: '',
+                    student_previous_student_id: '',
+                    student_addmission_date: todayInString(),
+                    student_addmission_year: YEAR,
+                    student_addmission_dateAndTime: Date.now(),
                   });
-              }}
-            />
+                  setAdmClassText('প্রাক প্রাথমিক');
+                  setGenderText('লিঙ্গ বেছে নিন');
+                  setReligionText('ধর্ম বেছে নিন');
+                  setCastText('জাতি বেছে নিন');
+                  setBplText('বি.পি.এল. কিনা?');
+                  setReAdClassText('শ্রেণী বেছে নিন');
+                  setPath('');
+                  setImageName('');
+                  await ImagePicker.clean()
+                    .then(() => {
+                      console.log('removed all tmp images from tmp directory');
+                    })
+                    .catch(e => {
+                      console.log(e);
+                    });
+                }}
+              />
+              <CustomButton
+                title={'Close'}
+                color={'purple'}
+                size={'xsmall'}
+                onClick={async () => {
+                  setShowForm(false);
+                }}
+              />
+            </View>
           </View>
         </ScrollView>
       )}
@@ -2958,7 +2977,7 @@ export default function Admission() {
                   student_previous_school: '',
                   student_previous_student_id: '',
                   student_addmission_date: todayInString(),
-                  student_addmission_year: new Date().getFullYear(),
+                  student_addmission_year: YEAR,
                   student_addmission_dateAndTime: Date.now(),
                 });
                 setShowEditForm(false);

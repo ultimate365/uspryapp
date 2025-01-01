@@ -6,6 +6,7 @@ import {
   Modal,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
@@ -28,6 +29,7 @@ import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import RNExitApp from 'react-native-exit-app';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import CustomButton from '../components/CustomButton';
 const Splash = () => {
   const AnimatedImageBg = Animated.createAnimatedComponent(ImageBackground);
   const {setState} = useGlobalContext();
@@ -264,5 +266,33 @@ const styles = StyleSheet.create({
     height: responsiveHeight(100),
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  modalView: {
+    // width: responsiveWidth(80),
+    // height: responsiveWidth(80),
+    position: 'absolute',
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    borderRadius:responsiveWidth(10),
+    top: responsiveHeight(20)
+  },
+  mainView: {
+    width: responsiveWidth(100),
+    height: responsiveWidth(100),
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255,.9)',
+  },label: {
+    alignSelf: 'center',
+    fontSize: responsiveFontSize(2),
+    fontWeight: '500',
+    marginTop: responsiveHeight(0.2),
+    color: THEME_COLOR,
+    textAlign: 'center',
+    fontFamily: 'kalpurush',
   },
 });

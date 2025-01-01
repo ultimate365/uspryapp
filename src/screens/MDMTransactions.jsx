@@ -22,16 +22,9 @@ import {
 } from 'react-native-responsive-dimensions';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useGlobalContext} from '../context/Store';
-import {
-  MDM_COST,
-  PP_STUDENTS,
-  PRIMARY_STUDENTS,
-  SCHOOLNAME,
-} from '../modules/constants';
 import {showToast} from '../modules/Toaster';
 import {
   getCurrentDateInput,
-  getSubmitDateInput,
   IndianFormat,
   monthNamesWithIndex,
   round2dec,
@@ -54,7 +47,6 @@ export default function MDMTransactions() {
   } = useGlobalContext();
   const access = state?.ACCESS;
   const [currentDate, setCurrentDate] = useState(new Date());
-  const today = new Date();
   const [date, setDate] = useState(todayInString());
   const [fontColor, setFontColor] = useState(THEME_COLOR);
   const [open, setOpen] = useState(false);
@@ -122,11 +114,9 @@ export default function MDMTransactions() {
   const [transactionPurpose, setTransactionPurpose] =
     useState('MDM WITHDRAWAL');
   const [loader, setLoader] = useState(false);
-  const [allTransactions, setAllTransactions] = useState([]);
   const [thisAccounTransactions, setThisAccounTransactions] = useState([]);
   const [showEntry, setShowEntry] = useState(false);
   const [amount, setAmount] = useState('');
-  const [mdmWithdrawal, setMdmWithdrawal] = useState('MDM WITHDRAWAL');
   const [type, setType] = useState('DEBIT');
   const [ppOB, setPpOB] = useState('');
   const [ppCB, setPpCB] = useState('');
@@ -165,7 +155,6 @@ export default function MDMTransactions() {
     setIsEnabled(!isEnabled);
     if (isEnabled) {
       setType('CREDIT');
-      setMdmWithdrawal('MDM COOKING COST');
       setPurpose('MDM COOKING COST');
       setTransactionPurpose('MDM COOKING COST');
       setPpEX(0);
@@ -176,7 +165,6 @@ export default function MDMTransactions() {
       setPryRC('');
     } else {
       setType('DEBIT');
-      setMdmWithdrawal('MDM WITHDRAWAL');
       setPurpose('MDM WITHDRAWAL');
       setTransactionPurpose('MDM WITHDRAWAL');
       setPpRC(0);
@@ -256,8 +244,10 @@ export default function MDMTransactions() {
     const month =
       monthNamesWithIndex[
         currentDate.getDate() > 10
-          ? currentDate.getMonth()
-          : currentDate.getMonth() - 1
+        ? currentDate.getMonth()
+        : currentDate.getMonth() === 0
+        ? 11
+        : currentDate.getMonth() - 1
       ].monthName;
     const year = currentDate.getFullYear();
     setMonth(month);
@@ -275,7 +265,7 @@ export default function MDMTransactions() {
     const cyear = currentDate.getFullYear();
     return `${cmonth}-${cyear}`;
   };
-  const [id, setId] = useState(getId());
+  const [id, setId] = useState('');
   const [purpose, setPurpose] = useState('MDM WITHDRAWAL');
   const getTransactions = async () => {
     setLoader(true);
@@ -300,15 +290,14 @@ export default function MDMTransactions() {
             )
             .reverse(),
         );
+        setTransactionState(data.reverse());
         setLoader(false);
-        setAllTransactions(data);
         const x = data.filter(t => t.id === id);
         if (x.length > 0) {
           setId(getId() + `-${x.length}`);
         } else {
           setId(getId());
         }
-        setTransactionState(data);
       });
   };
 
@@ -624,14 +613,11 @@ export default function MDMTransactions() {
     if (transactionState.length === 0) {
       getTransactions();
     } else {
-      setAllTransactions(transactionState);
       setThisAccounTransactions(
-        transactionState
-          .filter(
-            transaction =>
-              transaction.accountNumber === stateObject.accountNumber,
-          )
-          .reverse(),
+        transactionState.filter(
+          transaction =>
+            transaction.accountNumber === stateObject.accountNumber,
+        ),
       );
       const x = transactionState.filter(t => t.id === id);
       if (x.length > 0) {
@@ -781,7 +767,6 @@ export default function MDMTransactions() {
                         setPryCB(transaction.pryCB);
                         setPryCB(transaction.pryCB);
                         setOpeningBalance(transaction.openingBalance);
-                        setMdmWithdrawal(transaction.transactionPurpose);
                         setPurposeText(transaction.transactionPurpose);
                       }}
                     />
@@ -936,7 +921,6 @@ export default function MDMTransactions() {
                         style={styles.AdminName}
                         onPress={() => {
                           setPurposeClicked(false);
-                          setMdmWithdrawal(item.purpose);
                           setPurpose(item.purpose);
                           setTransactionPurpose(item.purpose);
                           setPurposeText(item.purpose);
@@ -1140,7 +1124,6 @@ export default function MDMTransactions() {
                 setPryCB('');
                 setPryCB('');
                 setOpeningBalance(stateObject.balance);
-                setMdmWithdrawal('MDM WITHDRAWAL');
                 setPurposeText('MDM WITHDRAWAL');
                 setIsEnabled(false);
                 scrollToTop();

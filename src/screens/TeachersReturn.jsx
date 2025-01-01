@@ -128,9 +128,11 @@ export default function TeachersReturn() {
   };
   const month =
     monthNamesWithIndex[
-      currentDate?.getDate() > 10
-        ? currentDate?.getMonth()
-        : currentDate?.getMonth() - 1
+      currentDate.getDate() > 10
+        ? currentDate.getMonth()
+        : currentDate.getMonth() === 0
+        ? 11
+        : currentDate.getMonth() - 1
     ].monthName;
   const year = currentDate?.getFullYear();
   const [yearArray, setYearArray] = useState([]);

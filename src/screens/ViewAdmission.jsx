@@ -9,6 +9,7 @@ import {
   BackHandler,
   Image,
 } from 'react-native';
+import Modal from 'react-native-modal';
 import React, {useState, useEffect} from 'react';
 import {THEME_COLOR} from '../utils/Colors';
 import CustomButton from '../components/CustomButton';
@@ -23,14 +24,21 @@ import {
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
 import {useGlobalContext} from '../context/Store';
-import {ADMISSION_STATUS, classWiseAge, WEBSITE} from '../modules/constants';
+import {
+  ADMISSION_STATUS,
+  classWiseAge,
+  WEBSITE,
+  SCHOOLBENGALIADDRESS,
+  SCHOOLBENGALINAME,
+} from '../modules/constants';
 import {showToast} from '../modules/Toaster';
 import {
   DateValueToSring,
   getCurrentDateInput,
+  todayInString,
   uniqArray,
 } from '../modules/calculatefunctions';
-
+import schoolLogo from '../assets/images/logo.png';
 export default function ViewAdmission() {
   const isFocused = useIsFocused();
   const navigation = useNavigation();
@@ -45,7 +53,73 @@ export default function ViewAdmission() {
   const [showData, setShowData] = useState(false);
   const [admissionStatus, setAdmissionStatus] = useState(true);
   const statusID = ADMISSION_STATUS;
-
+  const [showDetails, setShowDetails] = useState(false);
+  const [studentDetails, setStudentDetails] = useState({
+    id: '',
+    url: '',
+    photoName: '',
+    student_beng_name: '',
+    student_eng_name: '',
+    father_beng_name: '',
+    father_eng_name: '',
+    mother_beng_name: '',
+    mother_eng_name: '',
+    guardian_beng_name: '',
+    guardian_eng_name: '',
+    student_birthday: `01-01-${new Date().getFullYear() - 5}`,
+    student_gender: '',
+    student_mobile: '',
+    student_aadhaar: '',
+    student_religion: '',
+    student_race: 'GENERAL',
+    student_bpl_status: 'NO',
+    student_bpl_number: '',
+    student_village: 'SEHAGORI',
+    student_post_office: 'KHOROP',
+    student_police_station: 'JOYPUR',
+    student_pin_code: '711401',
+    student_addmission_class: 'PRE PRIMARY',
+    student_previous_class: 'FIRST TIME ADDMISSION',
+    student_previous_class_year: '',
+    student_previous_school: '',
+    student_previous_student_id: '',
+    student_addmission_date: todayInString(),
+    student_addmission_year: '',
+    student_addmission_dateAndTime: Date.now(),
+  });
+  const {
+    id,
+    url,
+    photoName,
+    student_beng_name,
+    student_eng_name,
+    father_beng_name,
+    father_eng_name,
+    mother_beng_name,
+    mother_eng_name,
+    guardian_beng_name,
+    guardian_eng_name,
+    student_birthday,
+    student_gender,
+    student_mobile,
+    student_aadhaar,
+    student_religion,
+    student_race,
+    student_bpl_status,
+    student_bpl_number,
+    student_village,
+    student_post_office,
+    student_police_station,
+    student_pin_code,
+    student_addmission_class,
+    student_previous_class,
+    student_previous_class_year,
+    student_previous_school,
+    student_addmission_date,
+    student_addmission_dateAndTime,
+    updatedAt,
+    student_previous_student_id,
+  } = studentDetails;
   const calculateAge = (inputDate, students_class) => {
     const birthDate = new Date(inputDate);
     const today = new Date();
@@ -255,85 +329,89 @@ export default function ViewAdmission() {
           marginBottom: responsiveHeight(2),
         }}>
         <Loader visible={loader} />
-        <Text style={styles.title}>View Admission</Text>
-        <CustomButton
-          title={'Add / Edit Entry'}
-          size={'medium'}
-          fontSize={responsiveFontSize(1.5)}
-          color={'blueviolet'}
-          onClick={() => {
-            navigation.navigate('Home');
-            setActiveTab(3);
-          }}
-        />
-        <View
-          style={{
-            flexDirection: 'row',
-            alignSelf: 'center',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginVertical: responsiveHeight(1),
-          }}>
-          <Text
-            selectable
-            style={[
-              styles.title,
-              {
-                paddingRight: responsiveWidth(1.5),
-                fontSize: responsiveFontSize(2),
-              },
-            ]}>
-            Close Admission
-          </Text>
-          <Switch
-            trackColor={{false: '#767577', true: '#81b0ff'}}
-            thumbColor={admissionStatus ? '#f5dd4b' : '#f4f3f4'}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={() => {
-              setAdmissionStatus(prev => !prev);
-              changeAdmissionStatus(!admissionStatus);
-            }}
-            value={admissionStatus}
-          />
-
-          <Text
-            selectable
-            style={[
-              styles.title,
-              {paddingLeft: 5, fontSize: responsiveFontSize(2)},
-            ]}>
-            Open Admission
-          </Text>
-        </View>
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginTop: responsiveHeight(1),
-            flexWrap: 'wrap',
-            alignSelf: 'center',
-          }}>
-          <Text style={styles.title}>Admission Application Data</Text>
-          {applicationYear.map((year, index) => {
-            return (
-              <CustomButton
-                title={year}
-                size={'small'}
-                onClick={() => {
-                  let x = allData.filter(
-                    entry => entry.student_addmission_year === year,
-                  );
-                  setFilteredData(x);
-                  setShowData(true);
-                  setYear(year);
-                  setSearch('');
+        {!showDetails && (
+          <View>
+            <Text style={styles.title}>View Admission</Text>
+            <CustomButton
+              title={'Add / Edit Entry'}
+              size={'medium'}
+              fontSize={responsiveFontSize(1.5)}
+              color={'blueviolet'}
+              onClick={() => {
+                navigation.navigate('Home');
+                setActiveTab(3);
+              }}
+            />
+            <View
+              style={{
+                flexDirection: 'row',
+                alignSelf: 'center',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginVertical: responsiveHeight(1),
+              }}>
+              <Text
+                selectable
+                style={[
+                  styles.title,
+                  {
+                    paddingRight: responsiveWidth(1.5),
+                    fontSize: responsiveFontSize(2),
+                  },
+                ]}>
+                Close Admission
+              </Text>
+              <Switch
+                trackColor={{false: '#767577', true: '#81b0ff'}}
+                thumbColor={admissionStatus ? '#f5dd4b' : '#f4f3f4'}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={() => {
+                  setAdmissionStatus(prev => !prev);
+                  changeAdmissionStatus(!admissionStatus);
                 }}
-                key={index}
+                value={admissionStatus}
               />
-            );
-          })}
-        </View>
-        {showData && (
+
+              <Text
+                selectable
+                style={[
+                  styles.title,
+                  {paddingLeft: 5, fontSize: responsiveFontSize(2)},
+                ]}>
+                Open Admission
+              </Text>
+            </View>
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: responsiveHeight(1),
+                flexWrap: 'wrap',
+                alignSelf: 'center',
+              }}>
+              <Text style={styles.title}>Admission Application Data</Text>
+              {applicationYear.map((year, index) => {
+                return (
+                  <CustomButton
+                    title={year}
+                    size={'small'}
+                    onClick={() => {
+                      let x = allData.filter(
+                        entry => entry.student_addmission_year === year,
+                      );
+                      setFilteredData(x);
+                      setShowData(true);
+                      setYear(year);
+                      setSearch('');
+                    }}
+                    key={index}
+                  />
+                );
+              })}
+            </View>
+          </View>
+        )}
+        {showData && !showDetails && (
           <View
             style={{
               justifyContent: 'center',
@@ -409,6 +487,9 @@ export default function ViewAdmission() {
                   CLASS: {student?.student_addmission_class}
                 </Text>
                 <Text selectable style={styles.bankDataText}>
+                  Date of Birth: {student?.student_birthday}
+                </Text>
+                <Text selectable style={styles.bankDataText}>
                   VALIDATION:{'\n '}
                   {calculateAge(
                     getCurrentDateInput(student?.student_birthday),
@@ -440,8 +521,9 @@ export default function ViewAdmission() {
                     color={'darkgreen'}
                     size={'small'}
                     onClick={() => {
-                      setStateObject(student);
-                      navigation.navigate('ViewForm');
+                      setStudentDetails(student);
+                      setShowDetails(true);
+                      // navigation.navigate('ViewForm');
                     }}
                   />
 
@@ -466,6 +548,176 @@ export default function ViewAdmission() {
             ))}
           </View>
         )}
+        <Modal
+          animationType="slide"
+          visible={showDetails}
+          transparent
+          onBackdropPress={() => setShowDetails(false)}
+          onRequestClose={() => setShowDetails(false)}
+          animationIn={'fadeInUpBig'}
+          animationOut={'fadeOutLeftBig'}
+          animationInTiming={500}
+          animationOutTiming={500}
+          statusBarTranslucent={true}>
+          <View style={styles.modalView}>
+            <View style={styles.mainView}>
+              <ScrollView>
+                <View style={styles.headSection}>
+                  <Image
+                    source={schoolLogo}
+                    alt="logo"
+                    style={{
+                      width: responsiveWidth(15),
+                      height: responsiveWidth(15),
+                    }}
+                  />
+                  <View
+                    style={[
+                      styles.schView,
+                      {width: responsiveWidth(60), alignSelf: 'center'},
+                    ]}>
+                    <Text style={styles.schName}>{SCHOOLBENGALINAME}</Text>
+
+                    <Text style={styles.schAddress}>
+                      {SCHOOLBENGALIADDRESS}{' '}
+                    </Text>
+                  </View>
+
+                  <Image
+                    source={{
+                      uri: `https://api.qrserver.com/v1/create-qr-code/?data=UTTAR SEHAGORI PRIMARY SCHOOL: STUDENT NAME:${' '}${student_eng_name}, Father's name:${' '}${father_eng_name},Mother's name:${' '}${mother_eng_name}, Mobile Number:${' '}${student_mobile}, Gender:${' '}${student_gender},  Addmission Class:${' '} ${student_addmission_class}, Application Number:${' '} ${id}, Application Date:${' '} ${student_addmission_date}`,
+                    }}
+                    style={{
+                      width: responsiveWidth(15),
+                      height: responsiveWidth(15),
+                    }}
+                    alt="qr-code"
+                  />
+                </View>
+
+                <View style={styles.admView}>
+                  <Text style={styles.admText}>
+                    ভর্তির আবেদন পত্র (Online Admission)
+                  </Text>
+                  <View style={styles.paraView}>
+                    <Image
+                      style={{
+                        width: responsiveWidth(35),
+                        height: responsiveWidth(40),
+                        padding: responsiveWidth(2),
+                        margin: responsiveWidth(2),
+                        borderRadius: responsiveWidth(2),
+                      }}
+                      source={{uri: url}}
+                    />
+                    <Text style={styles.engparaText}>
+                      Application Form No.: {id}
+                    </Text>
+                    <Text style={[styles.engparaText]}>
+                      Application Date:{' '}
+                      {DateValueToSring(student_addmission_dateAndTime)}
+                    </Text>
+                    <Text style={styles.paraText}>
+                      ছাত্র / ছাত্রীর নাম (বাংলায়): {student_beng_name}
+                    </Text>
+                    <Text style={[styles.paraText]}>
+                      (ইংরাজীতে): {student_eng_name}
+                    </Text>
+
+                    <Text style={styles.paraText}>
+                      অভিভাবকের মোবাইল নাম্বার: {student_mobile}
+                    </Text>
+                    <Text style={[styles.paraText]}>
+                      ছাত্র/ছাত্রীর লিঙ্গ: {student_gender}
+                    </Text>
+
+                    <Text style={styles.paraText}>
+                      জন্ম তারিখ: {student_birthday}
+                    </Text>
+
+                    {student_aadhaar !== '' && (
+                      <Text style={[styles.paraText]}>
+                        আধার নং: {student_aadhaar}
+                      </Text>
+                    )}
+                    <Text style={styles.paraText}>
+                      পিতার নাম (বাংলায়): {father_beng_name}
+                    </Text>
+                    <Text style={[styles.paraText]}>
+                      (ইংরাজীতে): {father_eng_name}
+                    </Text>
+
+                    <Text style={styles.paraText}>
+                      মাতার নাম (বাংলায়): {mother_beng_name}
+                    </Text>
+                    <Text style={[styles.paraText]}>
+                      (ইংরাজীতে): {mother_eng_name}
+                    </Text>
+
+                    <Text style={styles.paraText}>
+                      অভিভাবকের নাম (বাংলায়): {guardian_beng_name}
+                    </Text>
+                    <Text style={[styles.paraText]}>
+                      (ইংরাজীতে): {guardian_eng_name}
+                    </Text>
+
+                    <Text style={styles.paraText}>
+                      ছাত্র/ছাত্রীর ধর্ম: {student_religion}
+                    </Text>
+                    <Text style={[styles.paraText]}>
+                      ছাত্র/ছাত্রীর জাতি: {student_race}
+                    </Text>
+
+                    <Text style={styles.paraText}>
+                      ছাত্র/ছাত্রী বি.পি.এল. কিনা?: {student_bpl_status}
+                    </Text>
+                    {student_bpl_status === 'YES' && (
+                      <Text style={[styles.paraText]}>
+                        অভিভাবকের বি.পি.এল. নাম্বার: {student_bpl_number}
+                      </Text>
+                    )}
+
+                    <Text style={styles.paraText}>
+                      ছাত্র/ছাত্রীর ঠিকানা: Vill.: {student_village},P.O.:{' '}
+                      {student_post_office},P.S.: {student_police_station}, PIN:
+                      {student_pin_code}
+                    </Text>
+
+                    <Text style={styles.paraText}>
+                      ছাত্র/ছাত্রীর বর্তমান ভর্তি হওয়ার শ্রেণী:{' '}
+                      {student_addmission_class}
+                    </Text>
+
+                    {student_previous_class !== 'FIRST TIME ADDMISSION' && (
+                      <View style={styles.paraView}>
+                        <Text style={styles.paraText}>
+                          ছাত্র/ছাত্রীর পূর্বের শ্রেণী: {student_previous_class}
+                        </Text>
+                        <Text style={[styles.paraText]}>
+                          ছাত্র/ছাত্রীর পূর্বের বর্ষ:{' '}
+                          {student_previous_class_year}
+                        </Text>
+                        <Text style={[styles.paraText]}>
+                        ছাত্র/ছাত্রীর পূর্বের স্টুডেন্ট আইডি:{' '}
+                        {student_previous_student_id}
+                      </Text>
+                      <Text style={styles.paraText}>
+                        ছাত্র/ছাত্রীর পূর্বের বিদ্যালয়ের নাম ও ঠিকানা:{' '}
+                        {student_previous_school}
+                      </Text>
+                      </View>
+                    )}
+                    {updatedAt !== undefined && (
+                      <Text style={styles.paraText}>
+                        Updated At: {DateValueToSring(updatedAt)}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
     </View>
   );
@@ -521,15 +773,16 @@ const styles = StyleSheet.create({
   },
   modalView: {
     width: responsiveWidth(100),
-    height: responsiveWidth(100),
+    height: responsiveWidth(210),
     position: 'absolute',
     backgroundColor: 'rgba(255, 255, 255,.9)',
     justifyContent: 'center',
     alignItems: 'center',
+    alignSelf: 'center',
   },
   mainView: {
-    width: responsiveWidth(80),
-    height: responsiveWidth(80),
+    // width: responsiveWidth(80),
+    // height: responsiveWidth(80),
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -612,5 +865,73 @@ const styles = StyleSheet.create({
     padding: 1,
     fontSize: responsiveFontSize(2),
     marginLeft: 5,
+  },
+  headSection: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginVertical: responsiveHeight(0.5),
+  },
+  schView: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  schName: {
+    fontSize: responsiveFontSize(2.5),
+    color: 'black',
+    fontFamily: 'kalpurush',
+    textAlign: 'center',
+  },
+  schAddress: {
+    fontSize: responsiveFontSize(2),
+    color: 'black',
+    fontFamily: 'kalpurush',
+    textAlign: 'center',
+  },
+
+  admView: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    alignContent: 'center',
+    alignSelf: 'center',
+    textAlign: 'center',
+    width: responsiveWidth(92),
+  },
+  admText: {
+    fontSize: responsiveFontSize(2.5),
+    color: 'black',
+    fontFamily: 'kalpurush',
+    textAlign: 'center',
+  },
+  paraView: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'column',
+    marginVertical: 1,
+    alignSelf: 'flex-start',
+    alignContent: 'center',
+  },
+  paraText: {
+    fontSize: responsiveFontSize(2),
+    color: 'black',
+    fontFamily: 'kalpurush',
+    textAlign: 'center',
+  },
+  engparaText: {
+    fontSize: responsiveFontSize(2),
+    color: 'black',
+    fontFamily: 'times',
+    textAlign: 'center',
   },
 });
