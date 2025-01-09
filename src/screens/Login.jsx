@@ -199,54 +199,42 @@ const Login = () => {
       try {
         setVisible(true);
         await firestore()
-          .collection('userStudents')
-          .where('studentID', '==', `028793${studentID}`)
+          .collection('students')
+          .where('student_id', '==', studentID)
           .get()
           .then(async snapShot => {
             const record = snapShot.docs[0]._data;
-            if (comparePassword(selectedDate, record.dob)) {
-              await firestore()
-                .collection('students')
-                .where('id', '==', record.id)
-                .get()
-                .then(async snapShot => {
-                  const sdata = snapShot.docs[0]._data;
-                  const Obj = {
-                    name: sdata.student_name,
-                    class: sdata.class.split(' (A)')[0],
-                    roll: sdata.roll_no,
-                    father_name: sdata.father_name,
-                    mother_name: sdata.mother_name,
-                    student_id: sdata.student_id,
-                    mobile: sdata.mobile,
-                    id: record.id,
-                    birthdate: record.birthdate,
-                    userType: record.userType,
-                  };
-                  const studentRecord = JSON.stringify(Obj);
-                  const loggedAt = Date.now().toString();
-                  setState({
-                    USER: Obj,
-                    USERTYPE: 'student',
-                    ACCESS: 'student',
-                    LOGGEDAT: loggedAt,
-                  });
-                  showToast(
-                    'success',
-                    `Congrats! ${sdata.student_name}, You are succesfully Logged In!`,
-                  );
-                  await EncryptedStorage.setItem('user', studentRecord);
-                  await EncryptedStorage.setItem('userType', 'student');
-                  await EncryptedStorage.setItem('loggedAt', loggedAt);
-                  setTimeout(() => {
-                    navigation.navigate('Home');
-                  }, 2000);
-                })
-                .catch(err => {
-                  showToast('error', "Can't Find Student");
-                  setVisible(false);
-                  console.log(err);
-                });
+            if (selectedDate === record.birthdate) {
+              const Obj = {
+                name: record.student_name,
+                class: record.class.split(' (A)')[0],
+                roll: record.roll_no,
+                father_name: record.father_name,
+                mother_name: record.mother_name,
+                student_id: record.student_id,
+                mobile: record.mobile,
+                id: record.id,
+                birthdate: record.birthdate,
+                userType: "student",
+              };
+              const studentRecord = JSON.stringify(Obj);
+              const loggedAt = Date.now().toString();
+              setState({
+                USER: Obj,
+                USERTYPE: 'student',
+                ACCESS: 'student',
+                LOGGEDAT: loggedAt,
+              });
+              showToast(
+                'success',
+                `Congrats! ${record.student_name}, You are succesfully Logged In!`,
+              );
+              await EncryptedStorage.setItem('user', studentRecord);
+              await EncryptedStorage.setItem('userType', 'student');
+              await EncryptedStorage.setItem('loggedAt', loggedAt);
+              setTimeout(() => {
+                navigation.navigate('Home');
+              }, 2000);
             } else {
               setVisible(false);
               showToast('error', 'Invalid Student ID or Date of Birth');
@@ -270,8 +258,8 @@ const Login = () => {
   };
   const validFormStudent = () => {
     let isValid = false;
-    if (studentID.length !== 8) {
-      setStudentIDERR('8 Digit Student ID is required');
+    if (studentID.length !== 14) {
+      setStudentIDERR('14 Digit Student ID is required');
       isValid = false;
     } else {
       setStudentIDERR('');
@@ -389,14 +377,14 @@ const Login = () => {
               Student&#8217;s Login
             </Text>
             <Text selectable style={styles.label}>
-              Last 8 Digits of Student ID
+              Plese Enter Your 14 Digit Student ID
             </Text>
             <CustomTextInput
               value={studentID}
               type={'number-pad'}
-              title={'Last 8 Digits of Student ID'}
-              maxLength={8}
-              placeholder={'Enter Last 8 Digits of Student ID'}
+              title={'14 Digits of Student ID'}
+              maxLength={14}
+              placeholder={'Enter 14 Digits of Student ID'}
               onChangeText={text => {
                 setStudentID(text);
               }}
@@ -537,7 +525,6 @@ const Login = () => {
             alignItems: 'center',
             alignSelf: 'center',
           }}>
-          
           <TouchableOpacity
             style={{alignSelf: 'center', paddingHorizontal: responsiveWidth(5)}}
             onPress={() => {

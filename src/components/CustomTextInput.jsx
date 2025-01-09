@@ -47,10 +47,12 @@ const CustomTextInput = ({
             size === 'small'
               ? 40
               : size === 'medium'
-                ? 100
-                : size === 'large'
-                  ? 250
-                  : 50,
+              ? 100
+              : size === 'large'
+              ? 250
+              : title.length >= 45
+              ? 60
+              : 50,
           marginRight: size === 'small' ? 5 : 0,
           borderColor: isFocused ? THEME_COLOR : '#9e9e9e',
           borderWidth: isFocused ? 1.5 : 1,
@@ -73,6 +75,7 @@ const CustomTextInput = ({
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
+          marginTop: title.length >= 45 ? responsiveHeight(2) : 0,
         }}>
         <TextInput
           placeholder={placeholder}
@@ -92,8 +95,8 @@ const CustomTextInput = ({
             backgroundColor: bgcolor
               ? bgcolor
               : !isEditable
-                ? 'rgba(212, 212, 212,0.3)'
-                : 'transparent',
+              ? 'rgba(212, 212, 212,0.3)'
+              : 'transparent',
             width: isEditable ? '90%' : '100%',
             fontFamily: fontFamily ? fontFamily : 'default',
           }}
@@ -118,7 +121,7 @@ const CustomTextInput = ({
           </TouchableOpacity>
         )}
         {!isEditable && (
-          <Text style={{right: responsiveWidth(5),position:"absolute"}}>
+          <Text style={{right: responsiveWidth(5), position: 'absolute'}}>
             {'  '}{' '}
             <Fontisto name="locked" size={30} color={color ? color : 'gray'} />
           </Text>

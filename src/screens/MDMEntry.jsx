@@ -28,6 +28,7 @@ import {
   SCHOOLNAME,
   WEBSITE,
   PREV_MDM_COST,
+  STUDENTRECORD,
 } from '../modules/constants';
 import {showToast} from '../modules/Toaster';
 import {
@@ -54,16 +55,23 @@ export default function MDMEntry() {
     monthlyReportState,
     setMonthlyReportState,
     setActiveTab,
-    transactionState,
-    setTransactionState,
+    StudentDataState,
+    setStudentDataState,
   } = useGlobalContext();
   const access = state?.ACCESS;
   const user = state?.USER;
   const [currentDate, setCurrentDate] = useState(new Date());
   const [date, setDate] = useState(new Date());
   const [fontColor, setFontColor] = useState(THEME_COLOR);
+  const [STUDENTS, setSTUDENTS] = useState({
+    YEAR: '2025',
+    PP_STUDENTS: 8,
+    PRIMARY_STUDENTS: 38,
+    PRIMARY_BOYS: 21,
+    PRIMARY_GIRLS: 25,
+    TOTAL_STUDENTS: 46,
+  });
   const [open, setOpen] = useState(false);
-
   const [pp, setPp] = useState('');
   const [pry, setPry] = useState('');
   const [showEntry, setShowEntry] = useState(false);
@@ -79,7 +87,6 @@ export default function MDMEntry() {
   const [allEnry, setAllEnry] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [moreFilteredData, setMoreFilteredData] = useState([]);
-  const [monthlyReportData, setMonthlyReportData] = useState([]);
   const [thisMonthMDMAllowance, setThisMonthMDMAllowance] =
     useState(PREV_MDM_COST);
   const [ppTotalMeal, setPpTotalMeal] = useState('');
@@ -106,7 +113,6 @@ export default function MDMEntry() {
   const [totalRiceGiven, setTotalRiceGiven] = useState('');
   const [riceExpend, setRiceExpend] = useState('');
   const [errRice, setErrRice] = useState('');
-  const [showRiceBalance, setShowRiceBalance] = useState(false);
   const [showSubmitMonthlyReport, setShowSubmitMonthlyReport] = useState(false);
   const [remarks, setRemarks] = useState('');
   const [monthToSubmit, setMonthToSubmit] = useState('');
@@ -151,84 +157,79 @@ export default function MDMEntry() {
     riceCB: '',
     riceConsunption: '',
     riceGiven: '',
-    date: '',
-    remarks: '',
-  });
-  const [prevMonthlyData, setPrevMonthData] = useState({
-    id: '',
-    month: '',
-    year: '',
-    financialYear: '',
-    worrkingDays: '',
-    totalWorkingDays: '',
-    ppTotal: '',
-    pryTotal: '',
-    monthlyPPCost: '',
-    monthlyPRYCost: '',
-    totalCost: '',
-    ricePPOB: '',
-    ricePryOB: '',
-    riceOB: '',
-    ricePPRC: '',
-    ricePryRC: '',
-    ricePPEX: '',
-    ricePryEX: '',
-    ricePPCB: '',
-    ricePryCB: '',
-    riceCB: '',
-    riceConsunption: '',
-    riceGiven: '',
-    date: '',
-    remarks: '',
-  });
-  const [thisMonthFromTransaction, setThisMonthFromTransaction] = useState({
-    accountName: '',
-    accountNumber: '',
-    amount: '',
-    purpose: '',
-    type: '',
-    date: '',
-    id: '',
     ppOB: '',
-    ppRC: '',
-    ppCB: '',
     pryOB: '',
+    ppRC: '',
     pryRC: '',
+    ppCB: '',
     pryCB: '',
-    openingBalance: '',
-    closingBalance: '',
+    prevPpRC: '',
+    prevPryRC: '',
+    prevMonthlyPPCost: '',
+    prevMonthlyPRYCost: '',
+    prevRicePPRC: '',
+    prevRicePryRC: '',
+    prevRicePPEX: '',
+    prevRicePryEX: '',
+    remarks: '',
+    date: todayInString(),
   });
-  const [thisMonthFromFirstTransaction, setThisMonthFromFirstTransaction] =
-    useState({
-      accountName: '',
-      accountNumber: '',
-      amount: '',
-      purpose: '',
-      type: '',
-      date: '',
-      id: '',
-      ppOB: '',
-      ppRC: '',
-      ppCB: '',
-      pryOB: '',
-      pryRC: '',
-      pryCB: '',
-      openingBalance: '',
-      closingBalance: '',
-    });
-
-  const [balRCPrevMonth, setBalRCPrevMonth] = useState(0);
-  const [balRCThisMonth, setBalRCThisMonth] = useState(0);
-  const [pryRCThisMonth, setPryRCThisMonth] = useState(0);
-  const [pryRCPrevMonth, setPryRCPrevMonth] = useState(0);
-  const [ftFound, setFtFound] = useState(false);
-  const [selectedYearTransactions, setSelectedYearTransactions] = useState([]);
+  const [mdmTransaction, setMdmTransaction] = useState({
+    ppOB: '',
+    pryOB: '',
+    ppRC: '',
+    pryRC: '',
+    ppCB: '',
+    pryCB: '',
+    prevPpRC: '',
+    prevPryRC: '',
+    prevMonthlyPPCost: '',
+    prevMonthlyPRYCost: '',
+  });
+  const [mdmRice, setMdmRice] = useState({
+    prevRicePPRC: '',
+    prevRicePryRC: '',
+    prevRicePPEX: '',
+    prevRicePryEX: '',
+  });
+  const [showStudentDataEntryForm, setShowStudentDataEntryForm] =
+    useState(false);
+  const [showStudentDataAddForm, setShowStudentDataAddForm] = useState(false);
+  const [showStudentDataEditForm, setShowStudentDataEditForm] = useState(false);
+  const [StudentData, setStudentData] = useState({
+    PP_STUDENTS: 8,
+    PRIMARY_BOYS: 21,
+    PRIMARY_GIRLS: 25,
+    PRIMARY_STUDENTS: 40,
+    TOTAL_STUDENTS: 46,
+    YEAR: '2025',
+    id: '2025',
+  });
+  const [StudentEditData, setStudentEditData] = useState({
+    PP_STUDENTS: 8,
+    PRIMARY_BOYS: 21,
+    PRIMARY_GIRLS: 25,
+    PRIMARY_STUDENTS: 40,
+    TOTAL_STUDENTS: 46,
+    YEAR: '2025',
+    id: '2025',
+  });
+  const [StudentEntryData, setStudentEntryData] = useState({
+    PP_STUDENTS: 8,
+    PRIMARY_BOYS: 21,
+    PRIMARY_GIRLS: 25,
+    PRIMARY_STUDENTS: 40,
+    TOTAL_STUDENTS: 46,
+    YEAR: '2025',
+    id: '2025',
+  });
   const [showDownloadButton, setShowDownloadButton] = useState(false);
   const calculateAgeOnSameDay = (event, selectedDate) => {
     const currentSelectedDate = selectedDate || date;
     setOpen('');
     setCurrentDate(currentSelectedDate);
     const year = currentSelectedDate?.getFullYear();
+    setSelectedYear(year.toString());
     let month = currentSelectedDate?.getMonth() + 1;
     if (month < 10) {
       month = `0${month}`;
@@ -247,6 +248,7 @@ export default function MDMEntry() {
     setOpen('');
     setCurrentDate(currentSelectedDate);
     const year = currentSelectedDate?.getFullYear();
+    setSelectedYear(year.toString());
     let month = currentSelectedDate?.getMonth() + 1;
     if (month < 10) {
       month = `0${month}`;
@@ -276,6 +278,7 @@ export default function MDMEntry() {
     setOpen('');
     setCurrentDate(currentSelectedDate);
     const year = currentSelectedDate?.getFullYear();
+    setSelectedYear(year.toString());
     let month = currentSelectedDate?.getMonth() + 1;
     if (month < 10) {
       month = `0${month}`;
@@ -500,6 +503,21 @@ export default function MDMEntry() {
         findRiceEntry(data);
       });
   };
+  const getStudentData = async () => {
+    await firestore()
+      .collection('studentYearData')
+      .get()
+      .then(snapshot => {
+        const data = snapshot.docs.map(doc => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        setStudentDataState(data);
+        setSTUDENTS(
+          data.filter(st => st.YEAR === new Date().getFullYear().toString())[0],
+        );
+      });
+  };
   const findRiceEntry = array => {
     if (array.filter(el => el?.id === todayInString()).length > 0) {
       setRiceDone(true);
@@ -529,33 +547,50 @@ export default function MDMEntry() {
         if (thisMonthlyData.length > 0) {
           filterMonthlyData(thisMonthlyData[0]);
         }
+        const thisMonthIndex = monthwiseSorted.findIndex(
+          data => data.id === monthYearID,
+        );
+        let prevMonthData = monthwiseSorted[monthwiseSorted.length - 1];
+        if (thisMonthIndex !== -1) {
+          prevMonthData = monthwiseSorted[monthwiseSorted.length - 1];
+        } else {
+          setMdmTransaction({
+            ...mdmTransaction,
+            ppOB: prevMonthData?.ppCB,
+            pryOB: prevMonthData?.pryCB,
+            prevPpRC: prevMonthData?.ppRC,
+            prevPryRC: prevMonthData?.pryRC,
+            prevMonthlyPPCost: prevMonthData?.monthlyPPCost,
+            prevMonthlyPRYCost: prevMonthData?.monthlyPRYCost,
+          });
+          setMdmRice({
+            ...mdmRice,
+            prevRicePPRC: prevMonthData?.ricePPRC,
+            prevRicePryRC: prevMonthData?.ricePryRC,
+            prevRicePPEX: prevMonthData?.ricePPCB,
+            prevRicePryEX: prevMonthData?.ricePryCB,
+          });
+          setRicePPOB(prevMonthData?.ricePPCB);
+          setRicePryOB(prevMonthData?.ricePryCB);
+          setRiceOB(prevMonthData?.riceCB);
+          setMonthlyPPCost(Math.round(ppTotalMeal * thisMonthMDMAllowance));
+          setMonthlyPRYCost(Math.round(pryTotalMeal * thisMonthMDMAllowance));
+          setMonthTotalCost(
+            Math.round(
+              ppTotalMeal * thisMonthMDMAllowance +
+                pryTotalMeal * thisMonthMDMAllowance,
+            ),
+          );
+          setMonthRiceConsunption(thisMonthTotalRiceConsumption);
+          setMonthRiceGiven(totalRiceGiven);
+          setMonthRiceCB(
+            prevMonthData?.riceCB +
+              totalRiceGiven -
+              thisMonthTotalRiceConsumption,
+          );
+        }
         setLoader(false);
       });
-  };
-  const [allTransactions, setAllTransactions] = useState([]);
-  const getTransactions = async () => {
-    setLoader(true);
-    if (transactionState.length > 0) {
-      setAllTransactions(transactionState);
-    } else {
-      await firestore()
-        .collection('transactions')
-        .get()
-        .then(snapshot => {
-          const data = snapshot.docs
-            .map(doc => ({
-              ...doc.data(),
-              id: doc.id,
-            }))
-            .sort(
-              (a, b) =>
-                Date.parse(getCurrentDateInput(a.date)) -
-                Date.parse(getCurrentDateInput(b.date)),
-            );
-          setAllTransactions(data);
-          setTransactionState(data);
-        });
-    }
   };
 
   const filterMonthlyData = entry => {
@@ -579,6 +614,25 @@ export default function MDMEntry() {
     setRicePryCB(entry.ricePryCB);
     setMonthRiceCB(entry.riceCB);
     setRemarks(entry.remarks);
+
+    setMdmTransaction({
+      ppOB: entry.ppOB,
+      pryOB: entry.pryOB,
+      ppRC: entry.ppRC,
+      pryRC: entry.pryRC,
+      ppCB: entry.ppCB,
+      pryCB: entry.pryCB,
+      prevPpRC: entry.prevPpRC,
+      prevPryRC: entry.prevPryRC,
+      prevMonthlyPPCost: entry.prevMonthlyPPCost,
+      prevMonthlyPRYCost: entry.prevMonthlyPRYCost,
+    });
+    setMdmRice({
+      prevRicePPRC: entry.prevRicePPRC,
+      prevRicePryRC: entry.prevRicePryRC,
+      prevRicePPEX: entry.prevRicePPEX,
+      prevRicePryEX: entry.prevRicePryEX,
+    });
   };
 
   const calledData = array => {
@@ -613,9 +667,6 @@ export default function MDMEntry() {
       const selectedValue = value;
       let x = [];
       let y = [];
-      setSelectedYearTransactions(
-        transactionState.filter(transaction => transaction.year === value),
-      );
       allEnry.map(entry => {
         const entryYear = entry.date.split('-')[2];
         const entryMonth = entry.date.split('-')[1];
@@ -643,7 +694,7 @@ export default function MDMEntry() {
   const handleMonthChange = month => {
     let x = [];
     let y = [];
-    allEnry.map((entry, index) => {
+    allEnry.map(entry => {
       const entryYear = entry.date.split('-')[2];
       const entryMonth = entry.date.split('-')[1];
       if (entryYear === selectedYear && entryMonth === month.index) {
@@ -667,61 +718,13 @@ export default function MDMEntry() {
       entry => entry.month === month.monthName,
     );
     if (findEntry.length > 0) {
+      setThisMonthlyData(findEntry[0]);
       setShowDownloadButton(true);
       console.log('found entry');
     } else {
       setShowDownloadButton(false);
       console.log('entry not found');
     }
-    monthlyReportState.map((entry, index) => {
-      const entryMonth = entry.month;
-      setThisMonthlyData(entry);
-      setPrevMonthData(monthlyReportState[index - 1]);
-      const debitThisMonth = selectedYearTransactions
-        .filter(transaction => transaction.month === entryMonth)
-        .filter(trans => trans.transactionPurpose === 'MDM WITHDRAWAL');
-      // const thisMonthTransaction = transactionState.filter(
-      //   (transaction) => transaction.id === entry.id
-      // )[0];
-
-      if (debitThisMonth.length > 0) {
-        setThisMonthFromTransaction(debitThisMonth[0]);
-      }
-      const creditTrThisMonth = selectedYearTransactions
-        .filter(trmonth => trmonth.month === month)
-        .filter(trtype => trtype.type === 'CREDIT');
-
-      if (creditTrThisMonth.length > 0) {
-        setFtFound(true);
-        setThisMonthFromFirstTransaction(creditTrThisMonth[0]);
-        let cBalRCThisMonth = 0;
-        let cPryRCThisMonth = 0;
-        creditTrThisMonth.forEach(tr => {
-          cBalRCThisMonth += tr.ppRC;
-          cPryRCThisMonth += tr.pryRC;
-        });
-        setBalRCThisMonth(cBalRCThisMonth);
-        setPryRCThisMonth(cPryRCThisMonth);
-      } else {
-        setFtFound(false);
-      }
-      const thisMonthName = entry.month;
-      const prevMonthName = months[months.indexOf(thisMonthName) - 1];
-      const creditTrPrevMonth = selectedYearTransactions
-        .filter(trmonth => trmonth.month === prevMonthName)
-        .filter(trtype => trtype.type === 'CREDIT');
-
-      if (creditTrPrevMonth.length > 0) {
-        let cBalPrevMonth = 0;
-        let cPryPrevMonth = 0;
-        creditTrPrevMonth.forEach(tr => {
-          cBalPrevMonth += tr.ppRC;
-          cPryPrevMonth += tr.pryRC;
-        });
-        setBalRCPrevMonth(cBalPrevMonth);
-        setPryRCPrevMonth(cPryPrevMonth);
-      }
-    });
     setFilteredData(x);
     setFilteredRiceData(
       y.sort(
@@ -747,9 +750,8 @@ export default function MDMEntry() {
       ppTotal += entry.pp;
       pryTotal += entry.pry;
     });
-
-    const entryMonth = x[0]?.date?.split('-')[1];
     let mdmCost = PREV_MDM_COST;
+    const entryMonth = x[0]?.date.split('-')[1];
     if (parseInt(selectedYear) <= 2024 && parseInt(entryMonth) <= 11) {
       setThisMonthMDMAllowance(PREV_MDM_COST);
       mdmCost = PREV_MDM_COST;
@@ -762,13 +764,12 @@ export default function MDMEntry() {
     setMonthYearID(`${month.monthName}-${selectedYear}`);
     setMonthToSubmit(month.monthName);
     setMonthWorkingDays(x.length);
-
     setMonthPPTotal(ppTotal);
-    setMonthlyPPCost(Math.round(ppTotal * mdmCost));
     setMonthPRYTotal(pryTotal);
-    setThisMonthTotalCost(Math.round((ppTotal + pryTotal) * mdmCost));
+    setMonthlyPPCost(Math.round(ppTotal * mdmCost));
+    setThisMonthTotalCost(Math.round(ppTotal * mdmCost + pryTotal * mdmCost));
     setMonthlyPRYCost(
-      Math.round((ppTotal + pryTotal) * mdmCost) -
+      Math.round(ppTotal * mdmCost + pryTotal * mdmCost) -
         Math.round(ppTotal * mdmCost),
     );
     setMonthRiceOB(thisMonthRiceData[0]?.riceOB);
@@ -852,26 +853,50 @@ export default function MDMEntry() {
         month: monthToSubmit,
         year: selectedYear.toString(),
         financialYear: financialYear,
-        worrkingDays: monthWorkingDays,
-        totalWorkingDays: totalWorkingDays,
-        ppTotal: monthPPTotal,
-        pryTotal: monthPRYTotal,
-        monthlyPPCost: monthlyPPCost,
-        monthlyPRYCost: monthlyPRYCost,
-        totalCost: monthTotalCost,
-        ricePPOB,
-        ricePryOB,
-        riceOB: monthRiceOB,
-        ricePPRC,
-        ricePryRC,
-        ricePPEX,
-        ricePryEX,
-        ricePPCB,
-        ricePryCB,
-        riceCB: monthRiceCB,
-        riceConsunption: monthRiceConsunption,
-        riceGiven: monthRiceGiven,
+        worrkingDays: monthWorkingDays !== '' ? monthWorkingDays : 0,
+        totalWorkingDays: totalWorkingDays !== '' ? totalWorkingDays : 0,
+        ppTotal: monthPPTotal !== '' ? monthPPTotal : 0,
+        pryTotal: monthPRYTotal !== '' ? monthPRYTotal : 0,
+        monthlyPPCost: monthlyPPCost !== '' ? monthlyPPCost : 0,
+        monthlyPRYCost: monthlyPRYCost !== '' ? monthlyPRYCost : 0,
+        totalCost: monthTotalCost !== '' ? monthTotalCost : 0,
+        ricePPOB: ricePPOB !== '' ? ricePPOB : 0,
+        ricePryOB: ricePryOB !== '' ? ricePryOB : 0,
+        riceOB: monthRiceOB !== '' ? monthRiceOB : 0,
+        ricePPRC: ricePPRC !== '' ? ricePPRC : 0,
+        ricePryRC: ricePryRC !== '' ? ricePryRC : 0,
+        ricePPEX: ricePPEX !== '' ? ricePPEX : 0,
+        ricePryEX: ricePryEX !== '' ? ricePryEX : 0,
+        ricePPCB: ricePPCB !== '' ? ricePPCB : 0,
+        ricePryCB: ricePryCB !== '' ? ricePryCB : 0,
+        riceCB: monthRiceCB !== '' ? monthRiceCB : 0,
+        riceConsunption: monthRiceConsunption !== '' ? monthRiceConsunption : 0,
+        riceGiven: monthRiceGiven !== '' ? monthRiceGiven : 0,
+        ppOB: mdmTransaction.ppOB !== '' ? mdmTransaction.ppOB : 0,
+        pryOB: mdmTransaction.pryOB !== '' ? mdmTransaction.pryOB : 0,
+        ppRC: mdmTransaction.ppRC !== '' ? mdmTransaction.ppRC : 0,
+        pryRC: mdmTransaction.pryRC !== '' ? mdmTransaction.pryRC : 0,
+        ppCB: mdmTransaction.ppCB !== '' ? mdmTransaction.ppCB : 0,
+        pryCB: mdmTransaction.pryCB !== '' ? mdmTransaction.pryCB : 0,
+        prevPpRC: mdmTransaction.prevPpRC !== '' ? mdmTransaction.prevPpRC : 0,
+        prevPryRC:
+          mdmTransaction.prevPryRC !== '' ? mdmTransaction.prevPryRC : 0,
+        prevMonthlyPPCost:
+          mdmTransaction.prevMonthlyPPCost !== ''
+            ? mdmTransaction.prevMonthlyPPCost
+            : 0,
+        prevMonthlyPRYCost:
+          mdmTransaction.prevMonthlyPRYCost !== ''
+            ? mdmTransaction.prevMonthlyPRYCost
+            : 0,
+        prevRicePPRC: mdmRice.prevRicePPRC !== '' ? mdmRice.prevRicePPRC : 0,
+        prevRicePryRC: mdmRice.prevRicePryRC !== '' ? mdmRice.prevRicePryRC : 0,
+        prevRicePPEX: mdmRice.prevRicePPEX !== '' ? mdmRice.prevRicePPEX : 0,
+        prevRicePryEX: mdmRice.prevRicePryEX !== '' ? mdmRice.prevRicePryEX : 0,
         remarks: remarks,
+        ppStudent: StudentData.PP_STUDENTS,
+        pryStudent: StudentData.PRIMARY_STUDENTS,
+        totalStudent: StudentData.TOTAL_STUDENTS,
         date: todayInString(),
       };
       await firestore()
@@ -914,6 +939,7 @@ export default function MDMEntry() {
       },
     ]);
   };
+
   const delEntry = async entry => {
     try {
       setLoader(true);
@@ -971,6 +997,101 @@ export default function MDMEntry() {
       showToast('error', 'Something went Wrong!');
     }
   };
+
+  const showConfirmDialog2 = entry => {
+    return Alert.alert(
+      'Hold On!',
+      `Are you sure you want to delete student data for ${entry.YEAR}`,
+      [
+        // The "No" button
+        // Does nothing but dismiss the dialog when tapped
+        {
+          text: 'Cancel',
+          onPress: () => showToast('success', 'Student data Not deleted'),
+        }, // The "Yes" button
+        {
+          text: 'Yes',
+          onPress: async () => {
+            await deleteStudentData(entry.id);
+          },
+        },
+      ],
+    );
+  };
+  const deleteStudentData = async id => {
+    try {
+      setLoader(true);
+      await firestore()
+        .collection('studentYearData')
+        .doc(id)
+        .delete()
+        .then(async () => {
+          showToast('success', 'Student Data Deleted successfully');
+          const filteredEntry = StudentDataState.filter(el => el.id !== id);
+          setStudentDataState(filteredEntry);
+          setLoader(false);
+        })
+        .catch(err => {
+          console.log(err);
+          setLoader(false);
+          showToast('error', 'Something went Wrong!');
+        });
+    } catch (e) {
+      console.log(e);
+      setLoader(false);
+      showToast('error', 'Something went Wrong!');
+    }
+  };
+  const handleStudentDataEditSubmit = async () => {
+    setLoader(true);
+    await firestore()
+      .collection('studentYearData')
+      .doc(StudentEntryData.id)
+      .update(StudentEntryData)
+      .then(() => {
+        showToast('success', 'Student Data Updated successfully');
+        setStudentEditData({
+          PP_STUDENTS: 8,
+          PRIMARY_BOYS: 21,
+          PRIMARY_GIRLS: 25,
+          PRIMARY_STUDENTS: 40,
+          TOTAL_STUDENTS: 46,
+          YEAR: '2025',
+          id: '2025',
+        });
+        const filteredEntry = StudentDataState.filter(
+          el => el.id !== StudentEntryData.id,
+        );
+        const updatedEntry = [...filteredEntry, StudentEntryData];
+        setStudentDataState(updatedEntry);
+        setShowStudentDataEditForm(false);
+        setLoader(false);
+      })
+      .catch(e => {
+        console.log(e);
+        setLoader(false);
+        showToast('error', 'Something went Wrong!');
+      });
+  };
+  const handleStudentDataNewAddSubmit = async () => {
+    setLoader(true);
+    await firestore()
+      .collection('studentYearData')
+      .doc(StudentEntryData.YEAR)
+      .set(StudentEntryData)
+      .then(() => {
+        showToast('success', 'Student Data Added successfully');
+        const updatedEntry = [...StudentDataState, StudentEntryData];
+        setStudentDataState(updatedEntry);
+        setLoader(false);
+        setShowStudentDataAddForm(false);
+      })
+      .catch(e => {
+        console.log(e);
+        setLoader(false);
+        showToast('error', 'Something went Wrong!');
+      });
+  };
   const getArrayLength = year => {
     let x = [];
     allEnry.map(entry => {
@@ -1014,17 +1135,25 @@ export default function MDMEntry() {
       findMDMEntry(mealState);
       setLoader(false);
     }
-    getTransactions();
     if (monthlyReportState.length === 0) {
       getMonthlyData();
     } else {
-      setMonthlyReportData(monthlyReportState);
       setLoader(false);
     }
     if (access !== 'teacher') {
       navigation.navigate('Home');
       setActiveTab(0);
       showToast('error', 'Unathorized access');
+    }
+    setSelectedYear(new Date().getFullYear().toString());
+    if (StudentDataState.length === 0) {
+      getStudentData();
+    } else {
+      setSTUDENTS(
+        StudentDataState.filter(
+          st => st.YEAR === new Date().getFullYear().toString(),
+        )[0],
+      );
     }
   }, [isFocused]);
   useEffect(() => {
@@ -1038,6 +1167,9 @@ export default function MDMEntry() {
     );
     return () => backHandler.remove();
   }, []);
+  useEffect(() => {
+    setSTUDENTS(StudentDataState.filter(st => st.YEAR === selectedYear)[0]);
+  }, [selectedYear]);
   return (
     <View style={{flex: 1}}>
       <Loader visible={loader} />
@@ -1101,6 +1233,19 @@ export default function MDMEntry() {
                 setDocId(todayInString());
               }}
             />
+            <CustomButton
+              title={'Student Data Entry'}
+              color={'purple'}
+              onClick={() => {
+                setShowStudentDataEntryForm(true);
+                setShowRiceData(false);
+                setShowMonthlyReport(false);
+                setShowDataTable(false);
+                setShowMonthSelection(false);
+                setShowEntry(false);
+                setShowUpdate(false);
+              }}
+            />
           </View>
         )}
         {showEntry && (
@@ -1151,13 +1296,13 @@ export default function MDMEntry() {
             <CustomTextInput
               title={'PP'}
               type={'number-pad'}
-              placeholder={`Max Limit: ${PP_STUDENTS}`}
+              placeholder={`Max Limit: ${STUDENTS.PP_STUDENTS}`}
               value={pp.toString()}
               onChangeText={text => {
                 if (text.length) {
-                  if (text > PP_STUDENTS) {
+                  if (text > STUDENTS.PP_STUDENTS) {
                     showToast('error', 'PP Limit Exceeded!');
-                    setPp(PP_STUDENTS);
+                    setPp(STUDENTS.PP_STUDENTS);
                   } else {
                     setPp(parseInt(text));
                   }
@@ -1170,13 +1315,13 @@ export default function MDMEntry() {
             <CustomTextInput
               title={'Primary'}
               type={'number-pad'}
-              placeholder={`Max Limit: ${PRIMARY_STUDENTS}`}
+              placeholder={`Max Limit: ${STUDENTS.PRIMARY_STUDENTS}`}
               value={pry.toString()}
               onChangeText={text => {
                 if (text.length) {
-                  if (text > PRIMARY_STUDENTS) {
+                  if (text > STUDENTS.PRIMARY_STUDENTS) {
                     showToast('error', 'Primary Limit Exceeded!');
-                    setPry(PRIMARY_STUDENTS);
+                    setPry(STUDENTS.PRIMARY_STUDENTS);
                   } else {
                     setPry(parseInt(text));
                   }
@@ -1253,13 +1398,13 @@ export default function MDMEntry() {
               </View>
               <CustomTextInput
                 title={'PP'}
-                placeholder={`Max Limit: ${PP_STUDENTS}`}
+                placeholder={`Max Limit: ${STUDENTS.PP_STUDENTS}`}
                 value={pp.toString()}
                 onChangeText={text => {
                   if (text.length) {
-                    if (text > PP_STUDENTS) {
+                    if (text > STUDENTS.PP_STUDENTS) {
                       showToast('error', 'PP Limit Exceeded!');
-                      setPp(PP_STUDENTS);
+                      setPp(STUDENTS.PP_STUDENTS);
                     } else {
                       setPp(parseInt(text));
                     }
@@ -1271,13 +1416,13 @@ export default function MDMEntry() {
               {errPP && <Text style={styles.error}>{errPP}</Text>}
               <CustomTextInput
                 title={'Primary'}
-                placeholder={`Max Limit: ${PRIMARY_STUDENTS}`}
+                placeholder={`Max Limit: ${STUDENTS.PRIMARY_STUDENTS}`}
                 value={pry.toString()}
                 onChangeText={text => {
                   if (text.length) {
-                    if (text > PRIMARY_STUDENTS) {
+                    if (text > STUDENTS.PRIMARY_STUDENTS) {
                       showToast('error', 'Primary Limit Exceeded!');
-                      setPry(PRIMARY_STUDENTS);
+                      setPry(STUDENTS.PRIMARY_STUDENTS);
                     } else {
                       setPry(parseInt(text));
                     }
@@ -1399,7 +1544,7 @@ export default function MDMEntry() {
             </View>
             {selectedYear && showMonthSelection ? (
               <View>
-                {entryMonths.length > 1 && (
+                {entryMonths.length > 0 && (
                   <Text selectable style={styles.bankDataText}>
                     Filter By Month
                   </Text>
@@ -1418,7 +1563,7 @@ export default function MDMEntry() {
                   backgroundColor: 'lightgoldenrodyellow',
                   padding: responsiveWidth(0.5),
                 }}>
-                {entryMonths.length > 1 && (
+                {entryMonths.length > 0 && (
                   <View
                     style={{
                       justifyContent: 'space-evenly',
@@ -1441,7 +1586,7 @@ export default function MDMEntry() {
                           borderRadius: responsiveWidth(3),
                           backgroundColor: 'lightgoldenrodyellow',
                           padding: responsiveWidth(0.5),
-                          flexWrap: 'wrap',
+                          // flexWrap: 'wrap',
                         }}>
                         <CustomButton
                           title={month.monthName}
@@ -1498,18 +1643,7 @@ export default function MDMEntry() {
                     title={`Download ${monthToSubmit} ${selectedYear} MDM PDF`}
                     onClick={async () => {
                       const data = {
-                        ftFound: ftFound,
                         thisMonthlyData: thisMonthlyData,
-                        thisMonthFromFirstTransaction:
-                          thisMonthFromFirstTransaction,
-                        thisMonthFromTransaction: thisMonthFromTransaction,
-                        prevMonthlyData: prevMonthlyData,
-                        balRCThisMonth: balRCThisMonth,
-                        pryRCThisMonth: pryRCThisMonth,
-                        balRCPrevMonth: balRCPrevMonth,
-                        pryRCPrevMonth: pryRCPrevMonth,
-                        remarks: remarks,
-                        mdmCost: thisMonthMDMAllowance,
                       };
                       await Linking.openURL(
                         `${WEBSITE}/downloadMDMReport?data=${JSON.stringify(
@@ -1645,6 +1779,57 @@ export default function MDMEntry() {
                         );
                         if (thisMonthlyData.length > 0) {
                           filterMonthlyData(thisMonthlyData[0]);
+                        } else {
+                          const thisMonthIndex = monthlyReportState.findIndex(
+                            data => data.id === monthYearID,
+                          );
+                          let prevMonthData =
+                            monthlyReportState[monthlyReportState.length - 1];
+                          if (thisMonthIndex !== -1) {
+                            prevMonthData =
+                              monthlyReportState[monthlyReportState.length - 1];
+                          } else {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              ppOB: prevMonthData?.ppCB,
+                              pryOB: prevMonthData?.pryCB,
+                              prevPpRC: prevMonthData?.ppRC,
+                              prevPryRC: prevMonthData?.pryRC,
+                              prevMonthlyPPCost: prevMonthData?.monthlyPPCost,
+                              prevMonthlyPRYCost: prevMonthData?.monthlyPRYCost,
+                            });
+                            setMdmRice({
+                              ...mdmRice,
+                              prevRicePPRC: prevMonthData?.ricePPRC,
+                              prevRicePryRC: prevMonthData?.ricePryRC,
+                              prevRicePPEX: prevMonthData?.ricePPCB,
+                              prevRicePryEX: prevMonthData?.ricePryCB,
+                            });
+                            setRicePPOB(prevMonthData?.ricePPCB);
+                            setRicePryOB(prevMonthData?.ricePryCB);
+                            setRiceOB(prevMonthData?.riceCB);
+                            setMonthlyPPCost(
+                              Math.round(ppTotalMeal * thisMonthMDMAllowance),
+                            );
+                            setMonthlyPRYCost(
+                              Math.round(pryTotalMeal * thisMonthMDMAllowance),
+                            );
+                            setMonthTotalCost(
+                              Math.round(
+                                ppTotalMeal * thisMonthMDMAllowance +
+                                  pryTotalMeal * thisMonthMDMAllowance,
+                              ),
+                            );
+                            setMonthRiceConsunption(
+                              thisMonthTotalRiceConsumption,
+                            );
+                            setMonthRiceGiven(totalRiceGiven);
+                            setMonthRiceCB(
+                              prevMonthData?.riceCB +
+                                totalRiceGiven -
+                                thisMonthTotalRiceConsumption,
+                            );
+                          }
                         }
                       }}
                     />
@@ -1747,6 +1932,198 @@ export default function MDMEntry() {
                             setMonthTotalCost(parseInt(text));
                           } else {
                             setMonthTotalCost('');
+                          }
+                        }}
+                      />
+                      <CustomTextInput
+                        title={'This Month PP A/C Opening Balance'}
+                        type={'number-pad'}
+                        placeholder={`Enter PP A/C OB This Month`}
+                        value={mdmTransaction.ppOB.toString()}
+                        onChangeText={text => {
+                          if (text !== '') {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              ppOB: parseFloat(text),
+                            });
+                          } else {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              ppOB: '',
+                            });
+                          }
+                        }}
+                      />
+                      <CustomTextInput
+                        title={'This Month PRIMARY A/C Opening Balance'}
+                        type={'number-pad'}
+                        placeholder={`Enter PRIMARY A/C OB This Month`}
+                        value={mdmTransaction.pryOB.toString()}
+                        onChangeText={text => {
+                          if (text !== '') {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              pryOB: parseFloat(text),
+                            });
+                          } else {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              pryOB: '',
+                            });
+                          }
+                        }}
+                      />
+                      <CustomTextInput
+                        title={'This Month This Month PP A/C Total Credit'}
+                        type={'number-pad'}
+                        placeholder={`Enter PP A/C Total Credit This Month`}
+                        value={mdmTransaction.ppRC.toString()}
+                        onChangeText={text => {
+                          if (text !== '') {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              ppRC: parseFloat(text),
+                            });
+                          } else {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              ppRC: '',
+                            });
+                          }
+                        }}
+                      />
+                      <CustomTextInput
+                        title={'This Month This Month PRIMARY A/C Total Credit'}
+                        type={'number-pad'}
+                        placeholder={`Enter PRIMARY A/C Total Credit This Month`}
+                        value={mdmTransaction.pryRC.toString()}
+                        onChangeText={text => {
+                          if (text !== '') {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              pryRC: parseFloat(text),
+                            });
+                          } else {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              pryRC: '',
+                            });
+                          }
+                        }}
+                      />
+                      <CustomTextInput
+                        title={'This Month This Month PP A/C Closing Balance'}
+                        type={'number-pad'}
+                        placeholder={`Enter PP A/C Closing Balance This Month`}
+                        value={mdmTransaction.ppCB.toString()}
+                        onChangeText={text => {
+                          if (text !== '') {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              ppCB: parseFloat(text),
+                            });
+                          } else {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              ppCB: '',
+                            });
+                          }
+                        }}
+                      />
+                      <CustomTextInput
+                        title={
+                          'This Month This Month PRIMARY A/C Closing Balance'
+                        }
+                        type={'number-pad'}
+                        placeholder={`Enter PRIMARY A/C Closing Balance This Month`}
+                        value={mdmTransaction.pryCB.toString()}
+                        onChangeText={text => {
+                          if (text !== '') {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              pryCB: parseFloat(text),
+                            });
+                          } else {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              pryCB: '',
+                            });
+                          }
+                        }}
+                      />
+                      <CustomTextInput
+                        title={'Previous Month PP A/C Total Credit'}
+                        type={'number-pad'}
+                        placeholder={`Enter Previous Month PP A/C Total Credit`}
+                        value={mdmTransaction.prevPpRC.toString()}
+                        onChangeText={text => {
+                          if (text !== '') {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              prevPpRC: parseFloat(text),
+                            });
+                          } else {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              prevPpRC: '',
+                            });
+                          }
+                        }}
+                      />
+                      <CustomTextInput
+                        title={'Previous Month PRIMARY A/C Total Credit'}
+                        type={'number-pad'}
+                        placeholder={`Enter Previous Month PRIMARY A/C Total Credit`}
+                        value={mdmTransaction.prevPryRC.toString()}
+                        onChangeText={text => {
+                          if (text !== '') {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              prevPryRC: parseFloat(text),
+                            });
+                          } else {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              prevPryRC: '',
+                            });
+                          }
+                        }}
+                      />
+                      <CustomTextInput
+                        title={'Previous Month PP Expense'}
+                        type={'number-pad'}
+                        placeholder={`Enter Previous Month PP Expense`}
+                        value={mdmTransaction.prevMonthlyPPCost.toString()}
+                        onChangeText={text => {
+                          if (text !== '') {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              prevMonthlyPPCost: parseFloat(text),
+                            });
+                          } else {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              prevMonthlyPPCost: '',
+                            });
+                          }
+                        }}
+                      />
+                      <CustomTextInput
+                        title={'Previous Month PRIMARY Expense'}
+                        type={'number-pad'}
+                        placeholder={`Enter Previous Month PRIMARY Expense`}
+                        value={mdmTransaction.prevMonthlyPRYCost.toString()}
+                        onChangeText={text => {
+                          if (text !== '') {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              prevMonthlyPRYCost: parseFloat(text),
+                            });
+                          } else {
+                            setMdmTransaction({
+                              ...mdmTransaction,
+                              prevMonthlyPRYCost: '',
+                            });
                           }
                         }}
                       />
@@ -1903,6 +2280,82 @@ export default function MDMEntry() {
                             setMonthRiceCB(parseInt(text));
                           } else {
                             setMonthRiceCB('');
+                          }
+                        }}
+                      />
+                      <CustomTextInput
+                        title={'Previous Month PP Rice Received'}
+                        type={'number-pad'}
+                        placeholder={`Enter Previous Month PP Rice Received`}
+                        value={mdmRice.prevRicePPRC.toString()}
+                        onChangeText={text => {
+                          if (text !== '') {
+                            setMdmRice({
+                              ...mdmRice,
+                              prevRicePPRC: parseFloat(text),
+                            });
+                          } else {
+                            setMdmRice({
+                              ...mdmRice,
+                              prevRicePPRC: '',
+                            });
+                          }
+                        }}
+                      />
+                      <CustomTextInput
+                        title={'Previous Month PRIMARY Rice Received'}
+                        type={'number-pad'}
+                        placeholder={`Enter Previous Month PRIMARY Rice Received`}
+                        value={mdmRice.prevRicePryRC.toString()}
+                        onChangeText={text => {
+                          if (text !== '') {
+                            setMdmRice({
+                              ...mdmRice,
+                              prevRicePryRC: parseFloat(text),
+                            });
+                          } else {
+                            setMdmRice({
+                              ...mdmRice,
+                              prevRicePryRC: '',
+                            });
+                          }
+                        }}
+                      />
+                      <CustomTextInput
+                        title={'Previous Month PP Rice Expense'}
+                        type={'number-pad'}
+                        placeholder={`Enter Previous Month PP Rice Expense`}
+                        value={mdmRice.prevRicePPEX.toString()}
+                        onChangeText={text => {
+                          if (text !== '') {
+                            setMdmRice({
+                              ...mdmRice,
+                              prevRicePPEX: parseFloat(text),
+                            });
+                          } else {
+                            setMdmRice({
+                              ...mdmRice,
+                              prevRicePPEX: '',
+                            });
+                          }
+                        }}
+                      />
+                      <CustomTextInput
+                        title={'Previous Month PRIMARY Rice Expense'}
+                        type={'number-pad'}
+                        placeholder={`Enter Previous Month PRIMARY Rice Expense`}
+                        value={mdmRice.prevRicePryEX.toString()}
+                        onChangeText={text => {
+                          if (text !== '') {
+                            setMdmRice({
+                              ...mdmRice,
+                              prevRicePryEX: parseFloat(text),
+                            });
+                          } else {
+                            setMdmRice({
+                              ...mdmRice,
+                              prevRicePryEX: '',
+                            });
                           }
                         }}
                       />
@@ -2078,6 +2531,378 @@ export default function MDMEntry() {
                 setShowRiceData(false);
               }}
             />
+          </ScrollView>
+        )}
+        {showStudentDataEntryForm && (
+          <ScrollView
+            style={{
+              marginBottom: responsiveHeight(2),
+            }}>
+            <Text style={styles.title}>Student Data Entry</Text>
+            <CustomButton
+              title={'New Entry'}
+              fontSize={responsiveFontSize(1.4)}
+              size={'xsmall'}
+              onClick={() => {
+                setShowStudentDataAddForm(true);
+              }}
+            />
+            {StudentDataState.map((student, index) => {
+              return (
+                <React.Fragment key={index}>
+                  <View style={styles.dataView}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-around',
+                        alignItems: 'center',
+                        width: responsiveWidth(80),
+                        alignSelf: 'center',
+                      }}>
+                      <CustomButton
+                        title={'Edit'}
+                        color={'chocolate'}
+                        size={'xsmall'}
+                        onClick={() => {
+                          setStudentEditData(student);
+                          setShowStudentDataEditForm(true);
+                        }}
+                      />
+                      <View style={{flexGrow: 1}}>
+                        <Text selectable style={styles.bankDataText}>
+                          Sl: {index + 1}
+                        </Text>
+                        <Text selectable style={styles.bankDataText}>
+                          Year: {student.YEAR}
+                        </Text>
+                        <Text selectable style={styles.bankDataText}>
+                          PP: {student.PP_STUDENTS}
+                        </Text>
+                        <Text selectable style={styles.bankDataText}>
+                          Primary: {student.PRIMARY_STUDENTS}
+                        </Text>
+                        <Text selectable style={styles.bankDataText}>
+                          Total: {student.TOTAL_STUDENTS}
+                        </Text>
+                        <Text selectable style={styles.bankDataText}>
+                          Boys: {student.PRIMARY_BOYS}
+                        </Text>
+                        <Text selectable style={styles.bankDataText}>
+                          Girls: {student.PRIMARY_GIRLS}
+                        </Text>
+                      </View>
+                      <CustomButton
+                        title={'Delete'}
+                        color={'red'}
+                        size={'xsmall'}
+                        onClick={() => {
+                          showConfirmDialog2(student);
+                        }}
+                      />
+                    </View>
+                  </View>
+                </React.Fragment>
+              );
+            })}
+            <View style={{marginTop: responsiveHeight(1)}}>
+              {showStudentDataEditForm && (
+                <View>
+                  <Text style={styles.title}>Student Data Edit</Text>
+                  <CustomTextInput
+                    title={'Year'}
+                    type={'text'}
+                    value={StudentEditData.YEAR}
+                    onChangeText={text => {
+                      setStudentEditData({
+                        ...StudentEditData,
+                        YEAR: text,
+                      });
+                    }}
+                  />
+                  <CustomTextInput
+                    title={'PP Students'}
+                    type={'number-pad'}
+                    value={
+                      StudentEditData.PP_STUDENTS
+                        ? StudentEditData.PP_STUDENTS.toString()
+                        : ''
+                    }
+                    onChangeText={text => {
+                      if (text.trim()) {
+                        setStudentEditData({
+                          ...StudentEditData,
+                          PP_STUDENTS: parseInt(text),
+                        });
+                      } else {
+                        setStudentEditData({
+                          ...StudentEditData,
+                          PP_STUDENTS: '',
+                        });
+                      }
+                    }}
+                  />
+                  <CustomTextInput
+                    title={'Primary Students'}
+                    type={'number-pad'}
+                    value={
+                      StudentEditData.PRIMARY_STUDENTS
+                        ? StudentEditData.PRIMARY_STUDENTS.toString()
+                        : ''
+                    }
+                    onChangeText={text => {
+                      if (text.trim()) {
+                        setStudentEditData({
+                          ...StudentEditData,
+                          PRIMARY_STUDENTS: parseInt(text),
+                        });
+                      } else {
+                        setStudentEditData({
+                          ...StudentEditData,
+                          PRIMARY_STUDENTS: '',
+                        });
+                      }
+                    }}
+                  />
+                  <CustomTextInput
+                    title={'Total Students'}
+                    type={'number-pad'}
+                    value={
+                      StudentEditData.TOTAL_STUDENTS
+                        ? StudentEditData.TOTAL_STUDENTS.toString()
+                        : ''
+                    }
+                    onChangeText={text => {
+                      if (text.trim()) {
+                        setStudentEditData({
+                          ...StudentEditData,
+                          TOTAL_STUDENTS: parseInt(text),
+                        });
+                      } else {
+                        setStudentEditData({
+                          ...StudentEditData,
+                          TOTAL_STUDENTS: '',
+                        });
+                      }
+                    }}
+                  />
+                  <CustomTextInput
+                    title={'Primary Boys'}
+                    type={'number-pad'}
+                    value={
+                      StudentEditData.PRIMARY_BOYS
+                        ? StudentEditData.PRIMARY_BOYS.toString()
+                        : ''
+                    }
+                    onChangeText={text => {
+                      if (text.trim()) {
+                        setStudentEditData({
+                          ...StudentEditData,
+                          PRIMARY_BOYS: parseInt(text),
+                        });
+                      } else {
+                        setStudentEditData({
+                          ...StudentEditData,
+                          PRIMARY_BOYS: '',
+                        });
+                      }
+                    }}
+                  />
+                  <CustomTextInput
+                    title={'Primary Girls'}
+                    type={'number-pad'}
+                    value={
+                      StudentEditData.PRIMARY_GIRLS
+                        ? StudentEditData.PRIMARY_GIRLS.toString()
+                        : ''
+                    }
+                    onChangeText={text => {
+                      if (text.trim()) {
+                        setStudentEditData({
+                          ...StudentEditData,
+                          PRIMARY_GIRLS: parseInt(text),
+                        });
+                      } else {
+                        setStudentEditData({
+                          ...StudentEditData,
+                          PRIMARY_GIRLS: '',
+                        });
+                      }
+                    }}
+                  />
+                  <CustomButton
+                    marginTop={responsiveHeight(1)}
+                    color={'green'}
+                    title={'Update'}
+                    onClick={() => {
+                      handleStudentDataEditSubmit();
+                    }}
+                  />
+                  <CustomButton
+                    marginTop={responsiveHeight(1)}
+                    color={'red'}
+                    title={'Close Form'}
+                    onClick={() => {
+                      setShowStudentDataEditForm(false);
+                    }}
+                  />
+                </View>
+              )}
+            </View>
+            <View style={{marginTop: responsiveHeight(1)}}>
+              {showStudentDataAddForm && (
+                <View>
+                  <Text style={styles.title}>Student Data Add</Text>
+                  <CustomTextInput
+                    title={'Year'}
+                    type={'text'}
+                    value={StudentEntryData.YEAR}
+                    onChangeText={text => {
+                      setStudentEntryData({
+                        ...StudentEntryData,
+                        YEAR: text,
+                        id: text,
+                      });
+                    }}
+                  />
+                  <CustomTextInput
+                    title={'PP Students'}
+                    type={'number-pad'}
+                    value={
+                      StudentEntryData.PP_STUDENTS
+                        ? StudentEntryData.PP_STUDENTS.toString()
+                        : ''
+                    }
+                    onChangeText={text => {
+                      if (text.trim()) {
+                        setStudentEntryData({
+                          ...StudentEntryData,
+                          PP_STUDENTS: parseInt(text),
+                        });
+                      } else {
+                        setStudentEntryData({
+                          ...StudentEntryData,
+                          PP_STUDENTS: '',
+                        });
+                      }
+                    }}
+                  />
+                  <CustomTextInput
+                    title={'Primary Students'}
+                    type={'number-pad'}
+                    value={
+                      StudentEntryData.PRIMARY_STUDENTS
+                        ? StudentEntryData.PRIMARY_STUDENTS.toString()
+                        : ''
+                    }
+                    onChangeText={text => {
+                      if (text.trim()) {
+                        setStudentEntryData({
+                          ...StudentEntryData,
+                          PRIMARY_STUDENTS: parseInt(text),
+                        });
+                      } else {
+                        setStudentEntryData({
+                          ...StudentEntryData,
+                          PRIMARY_STUDENTS: '',
+                        });
+                      }
+                    }}
+                  />
+                  <CustomTextInput
+                    title={'Total Students'}
+                    type={'number-pad'}
+                    value={
+                      StudentEntryData.TOTAL_STUDENTS
+                        ? StudentEntryData.TOTAL_STUDENTS.toString()
+                        : ''
+                    }
+                    onChangeText={text => {
+                      if (text.trim()) {
+                        setStudentEntryData({
+                          ...StudentEntryData,
+                          TOTAL_STUDENTS: parseInt(text),
+                        });
+                      } else {
+                        setStudentEntryData({
+                          ...StudentEntryData,
+                          TOTAL_STUDENTS: '',
+                        });
+                      }
+                    }}
+                  />
+                  <CustomTextInput
+                    title={'Primary Boys'}
+                    type={'number-pad'}
+                    value={
+                      StudentEntryData.PRIMARY_BOYS
+                        ? StudentEntryData.PRIMARY_BOYS.toString()
+                        : ''
+                    }
+                    onChangeText={text => {
+                      if (text.trim()) {
+                        setStudentEntryData({
+                          ...StudentEntryData,
+                          PRIMARY_BOYS: parseInt(text),
+                        });
+                      } else {
+                        setStudentEntryData({
+                          ...StudentEntryData,
+                          PRIMARY_BOYS: '',
+                        });
+                      }
+                    }}
+                  />
+                  <CustomTextInput
+                    title={'Primary Girls'}
+                    type={'number-pad'}
+                    value={
+                      StudentEntryData.PRIMARY_GIRLS
+                        ? StudentEntryData.PRIMARY_GIRLS.toString()
+                        : ''
+                    }
+                    onChangeText={text => {
+                      if (text.trim()) {
+                        setStudentEntryData({
+                          ...StudentEntryData,
+                          PRIMARY_GIRLS: parseInt(text),
+                        });
+                      } else {
+                        setStudentEntryData({
+                          ...StudentEntryData,
+                          PRIMARY_GIRLS: '',
+                        });
+                      }
+                    }}
+                  />
+                  <CustomButton
+                    marginTop={responsiveHeight(1)}
+                    color={'green'}
+                    title={'Add'}
+                    onClick={() => {
+                      handleStudentDataNewAddSubmit();
+                    }}
+                  />
+                  <CustomButton
+                    marginTop={responsiveHeight(1)}
+                    color={'red'}
+                    title={'Close Form'}
+                    onClick={() => {
+                      setShowStudentDataAddForm(false);
+                    }}
+                  />
+                </View>
+              )}
+              <CustomButton
+                marginTop={responsiveHeight(1)}
+                color={'blueviolet'}
+                title={'Close'}
+                onClick={() => {
+                  setShowStudentDataEntryForm(false);
+                  setShowStudentDataEditForm(false);
+                  setShowStudentDataAddForm(false);
+                }}
+              />
+            </View>
           </ScrollView>
         )}
       </ScrollView>

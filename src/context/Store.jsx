@@ -88,6 +88,8 @@ const GlobalContext = createContext({
   setNavState: () => false,
   resultState: [],
   setResultState: () => [],
+  StudentDataState: [],
+  setStudentDataState: () => [],
 });
 export const GlobalContextProvider = ({children}) => {
   const [state, setState] = useState({
@@ -151,6 +153,7 @@ export const GlobalContextProvider = ({children}) => {
   const [sourceState, setSourceState] = useState([]);
   const [navState, setNavState] = useState(false);
   const [resultState, setResultState] = useState([]);
+  const [StudentDataState, setStudentDataState] = useState([]);
 
   return (
     <GlobalContext.Provider
@@ -207,6 +210,8 @@ export const GlobalContextProvider = ({children}) => {
         setNavState,
         resultState,
         setResultState,
+        StudentDataState,
+        setStudentDataState,
       }}>
       {children}
     </GlobalContext.Provider>
