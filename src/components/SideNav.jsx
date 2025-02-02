@@ -58,6 +58,11 @@ const SideNav = () => {
             Visitor's Section
           </Text>
           <TouchableOpacity
+            onPress={() => {
+              setActiveTab(12);
+              navigation.navigate('Home');
+              setNavState(false);
+            }}
             style={{
               justifyContent: 'flex-start',
               alignItems: 'center',
@@ -65,23 +70,21 @@ const SideNav = () => {
               flexDirection: 'row',
               width: responsiveWidth(55),
               paddingLeft: responsiveWidth(2),
-            }}
-            onPress={() => {
-              setActiveTab(0);
-              navigation.navigate('Home');
-              setNavState(false);
             }}>
-            <MaterialCommunityIcons
-              name="view-dashboard"
+            <FontAwesome5
+              name="user-graduate"
               size={20}
-              color={activeTab == 0 ? 'purple' : THEME_COLOR}
+              color={activeTab == 12 ? 'purple' : THEME_COLOR}
             />
             <Text
               style={[
                 styles.bottomText,
-                {color: activeTab == 0 ? 'purple' : THEME_COLOR},
+                {
+                  color: activeTab == 12 ? 'purple' : THEME_COLOR,
+                  textAlign: 'center',
+                },
               ]}>
-              Dashboard
+              Student List
             </Text>
           </TouchableOpacity>
           <TouchableOpacity

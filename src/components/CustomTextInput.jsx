@@ -50,7 +50,7 @@ const CustomTextInput = ({
               ? 100
               : size === 'large'
               ? 250
-              : title.length >= 45
+              : title?.length >= 45
               ? 60
               : 50,
           marginRight: size === 'small' ? 5 : 0,
@@ -75,7 +75,7 @@ const CustomTextInput = ({
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginTop: title.length >= 45 ? responsiveHeight(2) : 0,
+          marginTop: title?.length >= 45 ? responsiveHeight(2) : 0,
         }}>
         <TextInput
           placeholder={placeholder}

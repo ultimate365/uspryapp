@@ -262,7 +262,7 @@ export default function MDMEntry() {
     console.log(tarikh);
     setFontColor('black');
     setDocId(tarikh);
-    const filteredData = allEnry.filter(entry => entry.date === tarikh);
+    const filteredData = allEnry.filter(entry => entry?.date === tarikh);
     if (filteredData.length > 0) {
       const selectedDateData = filteredData[0];
       setPp(selectedDateData.pp);
@@ -304,9 +304,9 @@ export default function MDMEntry() {
       beforePrevDay = '0' + beforePrevDay;
     }
     const beforePrevDate = `${beforePrevDay}-${Month}-${Year}`;
-    const filteredData = riceData.filter(entry => entry.date === prevDate);
+    const filteredData = riceData.filter(entry => entry?.date === prevDate);
     const filteredPrevDayData = riceData.filter(
-      entry => entry.date === beforePrevDate,
+      entry => entry?.date === beforePrevDate,
     );
     if (filteredData.length > 0) {
       setRiceOB(filteredData[0]?.riceCB);
@@ -381,7 +381,7 @@ export default function MDMEntry() {
   };
 
   const searchTodaysData = async () => {
-    const todaysData = allEnry.filter(entry => entry.date === todayInString());
+    const todaysData = allEnry.filter(entry => entry?.date === todayInString());
     if (todaysData.length > 0) {
       const data = todaysData[0];
       setPp(data.pp);
@@ -417,7 +417,7 @@ export default function MDMEntry() {
           .then(() => {
             showToast('success', 'Data updated successfully');
             let x = [];
-            x = allEnry.filter(entry => entry.id !== docId);
+            x = allEnry.filter(entry => entry?.id !== docId);
             x = [
               ...x,
               {pp: parseInt(pp), pry: parseInt(pry), date: docId, id: docId},
@@ -572,7 +572,6 @@ export default function MDMEntry() {
           });
           setRicePPOB(prevMonthData?.ricePPCB);
           setRicePryOB(prevMonthData?.ricePryCB);
-          setRiceOB(prevMonthData?.riceCB);
           setMonthlyPPCost(Math.round(ppTotalMeal * thisMonthMDMAllowance));
           setMonthlyPRYCost(Math.round(pryTotalMeal * thisMonthMDMAllowance));
           setMonthTotalCost(
@@ -594,51 +593,51 @@ export default function MDMEntry() {
   };
 
   const filterMonthlyData = entry => {
-    setMonthWorkingDays(entry.worrkingDays);
-    setTotalWorkingDays(entry.totalWorkingDays);
-    setMonthPPTotal(entry.ppTotal);
-    setMonthPRYTotal(entry.pryTotal);
-    setMonthlyPPCost(entry.monthlyPPCost);
-    setMonthlyPRYCost(entry.monthlyPRYCost);
-    setMonthTotalCost(entry.totalCost);
-    setRicePPOB(entry.ricePPOB);
-    setRicePryOB(entry.ricePryOB);
-    setMonthRiceOB(entry.riceOB);
-    setRicePPRC(entry.ricePPRC);
-    setRicePryRC(entry.ricePryRC);
-    setMonthRiceGiven(entry.riceGiven);
-    setRicePPEX(entry.ricePPEX);
-    setRicePryEX(entry.ricePryEX);
-    setMonthRiceConsunption(entry.riceConsunption);
-    setRicePPCB(entry.ricePPCB);
-    setRicePryCB(entry.ricePryCB);
-    setMonthRiceCB(entry.riceCB);
-    setRemarks(entry.remarks);
+    setMonthWorkingDays(entry?.worrkingDays);
+    setTotalWorkingDays(entry?.totalWorkingDays);
+    setMonthPPTotal(entry?.ppTotal);
+    setMonthPRYTotal(entry?.pryTotal);
+    setMonthlyPPCost(entry?.monthlyPPCost);
+    setMonthlyPRYCost(entry?.monthlyPRYCost);
+    setMonthTotalCost(entry?.totalCost);
+    setRicePPOB(entry?.ricePPOB);
+    setRicePryOB(entry?.ricePryOB);
+    setMonthRiceOB(entry?.riceOB);
+    setRicePPRC(entry?.ricePPRC);
+    setRicePryRC(entry?.ricePryRC);
+    setMonthRiceGiven(entry?.riceGiven);
+    setRicePPEX(entry?.ricePPEX);
+    setRicePryEX(entry?.ricePryEX);
+    setMonthRiceConsunption(entry?.riceConsunption);
+    setRicePPCB(entry?.ricePPCB);
+    setRicePryCB(entry?.ricePryCB);
+    setMonthRiceCB(entry?.riceCB);
+    setRemarks(entry?.remarks);
 
     setMdmTransaction({
-      ppOB: entry.ppOB,
-      pryOB: entry.pryOB,
-      ppRC: entry.ppRC,
-      pryRC: entry.pryRC,
-      ppCB: entry.ppCB,
-      pryCB: entry.pryCB,
-      prevPpRC: entry.prevPpRC,
-      prevPryRC: entry.prevPryRC,
-      prevMonthlyPPCost: entry.prevMonthlyPPCost,
-      prevMonthlyPRYCost: entry.prevMonthlyPRYCost,
+      ppOB: entry?.ppOB,
+      pryOB: entry?.pryOB,
+      ppRC: entry?.ppRC,
+      pryRC: entry?.pryRC,
+      ppCB: entry?.ppCB,
+      pryCB: entry?.pryCB,
+      prevPpRC: entry?.prevPpRC,
+      prevPryRC: entry?.prevPryRC,
+      prevMonthlyPPCost: entry?.prevMonthlyPPCost,
+      prevMonthlyPRYCost: entry?.prevMonthlyPRYCost,
     });
     setMdmRice({
-      prevRicePPRC: entry.prevRicePPRC,
-      prevRicePryRC: entry.prevRicePryRC,
-      prevRicePPEX: entry.prevRicePPEX,
-      prevRicePryEX: entry.prevRicePryEX,
+      prevRicePPRC: entry?.prevRicePPRC,
+      prevRicePryRC: entry?.prevRicePryRC,
+      prevRicePPEX: entry?.prevRicePPEX,
+      prevRicePryEX: entry?.prevRicePryEX,
     });
   };
 
   const calledData = array => {
     let x = [];
     array.map(entry => {
-      const entryYear = entry.date.split('-')[2];
+      const entryYear = entry?.date.split('-')[2];
       x.push(entryYear);
       x = uniqArray(x);
       x = x.sort((a, b) => a - b);
@@ -647,8 +646,8 @@ export default function MDMEntry() {
     let ppTotal = 0;
     let pryTotal = 0;
     array.map(entry => {
-      ppTotal += entry.pp;
-      pryTotal += entry.pry;
+      ppTotal += entry?.pp;
+      pryTotal += entry?.pry;
     });
     setPpTotalMeal(ppTotal);
     setPryTotalMeal(pryTotal);
@@ -668,8 +667,8 @@ export default function MDMEntry() {
       let x = [];
       let y = [];
       allEnry.map(entry => {
-        const entryYear = entry.date.split('-')[2];
-        const entryMonth = entry.date.split('-')[1];
+        const entryYear = entry?.date.split('-')[2];
+        const entryMonth = entry?.date.split('-')[1];
         if (entryYear === selectedValue) {
           x.push(entry);
         }
@@ -695,15 +694,15 @@ export default function MDMEntry() {
     let x = [];
     let y = [];
     allEnry.map(entry => {
-      const entryYear = entry.date.split('-')[2];
-      const entryMonth = entry.date.split('-')[1];
+      const entryYear = entry?.date.split('-')[2];
+      const entryMonth = entry?.date.split('-')[1];
       if (entryYear === selectedYear && entryMonth === month.index) {
         return x.push(entry);
       }
     });
     riceData.map(entry => {
-      const entryYear = entry.date.split('-')[2];
-      const entryMonth = entry.date.split('-')[1];
+      const entryYear = entry?.date.split('-')[2];
+      const entryMonth = entry?.date.split('-')[1];
       if (entryYear === selectedYear && entryMonth === month.index) {
         return y.push(entry);
       }
@@ -715,9 +714,9 @@ export default function MDMEntry() {
       setFinancialYear(`${selectedYear}-${parseInt(selectedYear) + 1}`);
     }
     const findEntry = monthlyReportState.filter(
-      entry => entry.month === month.monthName,
+      entry => entry?.month === month.monthName,
     );
-    if (findEntry.length > 0) {
+    if (findEntry?.length > 0) {
       setThisMonthlyData(findEntry[0]);
       setShowDownloadButton(true);
       console.log('found entry');
@@ -741,14 +740,14 @@ export default function MDMEntry() {
         Date.parse(getCurrentDateInput(b.date)),
     );
     y.map(entry => {
-      riceGiven += entry.riceGiven;
+      riceGiven += entry?.riceGiven;
     });
     setTotalRiceGiven(riceGiven);
     let ppTotal = 0;
     let pryTotal = 0;
     x.map(entry => {
-      ppTotal += entry.pp;
-      pryTotal += entry.pry;
+      ppTotal += entry?.pp;
+      pryTotal += entry?.pry;
     });
     let mdmCost = PREV_MDM_COST;
     const entryMonth = x[0]?.date.split('-')[1];
@@ -945,19 +944,19 @@ export default function MDMEntry() {
       setLoader(true);
       await firestore()
         .collection('mdmData')
-        .doc(entry.id)
+        .doc(entry?.id)
         .delete()
         .then(async () => {
           try {
             await firestore()
               .collection('rice')
-              .doc(entry.id)
+              .doc(entry?.id)
               .delete()
               .then(() => {
                 const filteredEntry = riceState.filter(
-                  el => el.id !== entry.id,
+                  el => el.id !== entry?.id,
                 );
-                const thisEntry = riceState.filter(el => el.id === entry.id)[0];
+                const thisEntry = riceState.filter(el => el.id === entry?.id)[0];
                 setRiceState(filteredEntry);
                 setRiceOB(thisEntry?.riceOB);
                 setRiceCB(thisEntry?.riceOB);
@@ -974,14 +973,14 @@ export default function MDMEntry() {
           }
           setLoader(false);
           showToast('success', 'MDM Data Deleted successfully');
-          const filteredEntry = mealState.filter(el => el.id !== entry.id);
+          const filteredEntry = mealState.filter(el => el.id !== entry?.id);
           setMealState(filteredEntry);
           setAllEnry(filteredEntry);
           findRiceEntry(filteredEntry);
           setMoreFilteredData(
-            moreFilteredData.filter(el => el.id !== entry.id),
+            moreFilteredData.filter(el => el.id !== entry?.id),
           );
-          setFilteredData(filteredData.filter(el => el.id !== entry.id));
+          setFilteredData(filteredData.filter(el => el.id !== entry?.id));
           setShowMonthlyReport(false);
           setShowMonthSelection(false);
           setShowDataTable(false);
@@ -1001,7 +1000,7 @@ export default function MDMEntry() {
   const showConfirmDialog2 = entry => {
     return Alert.alert(
       'Hold On!',
-      `Are you sure you want to delete student data for ${entry.YEAR}`,
+      `Are you sure you want to delete student data for ${entry?.YEAR}`,
       [
         // The "No" button
         // Does nothing but dismiss the dialog when tapped
@@ -1012,7 +1011,7 @@ export default function MDMEntry() {
         {
           text: 'Yes',
           onPress: async () => {
-            await deleteStudentData(entry.id);
+            await deleteStudentData(entry?.id);
           },
         },
       ],
@@ -1095,7 +1094,7 @@ export default function MDMEntry() {
   const getArrayLength = year => {
     let x = [];
     allEnry.map(entry => {
-      const entryYear = entry.id?.split('-')[2];
+      const entryYear = entry?.id?.split('-')[2];
       if (entryYear === year) {
         x.push(entry);
       }
@@ -1185,10 +1184,10 @@ export default function MDMEntry() {
               color={mdmDone ? 'red' : 'green'}
               onClick={() => {
                 allEnry.map(entry => {
-                  if (entry.date === todayInString()) {
+                  if (entry?.date === todayInString()) {
                     showToast('error', 'Todays Entry Already Done!');
-                    setPp(entry.pp);
-                    setPry(entry.pry);
+                    setPp(entry?.pp);
+                    setPry(entry?.pry);
                   } else {
                     setPp('');
                     setPry('');
@@ -1296,13 +1295,13 @@ export default function MDMEntry() {
             <CustomTextInput
               title={'PP'}
               type={'number-pad'}
-              placeholder={`Max Limit: ${STUDENTS.PP_STUDENTS}`}
+              placeholder={`Max Limit: ${STUDENTS?.PP_STUDENTS}`}
               value={pp.toString()}
               onChangeText={text => {
                 if (text.length) {
-                  if (text > STUDENTS.PP_STUDENTS) {
+                  if (text > STUDENTS?.PP_STUDENTS) {
                     showToast('error', 'PP Limit Exceeded!');
-                    setPp(STUDENTS.PP_STUDENTS);
+                    setPp(STUDENTS?.PP_STUDENTS);
                   } else {
                     setPp(parseInt(text));
                   }
@@ -1315,13 +1314,13 @@ export default function MDMEntry() {
             <CustomTextInput
               title={'Primary'}
               type={'number-pad'}
-              placeholder={`Max Limit: ${STUDENTS.PRIMARY_STUDENTS}`}
+              placeholder={`Max Limit: ${STUDENTS?.PRIMARY_STUDENTS}`}
               value={pry.toString()}
               onChangeText={text => {
                 if (text.length) {
-                  if (text > STUDENTS.PRIMARY_STUDENTS) {
+                  if (text > STUDENTS?.PRIMARY_STUDENTS) {
                     showToast('error', 'Primary Limit Exceeded!');
-                    setPry(STUDENTS.PRIMARY_STUDENTS);
+                    setPry(STUDENTS?.PRIMARY_STUDENTS);
                   } else {
                     setPry(parseInt(text));
                   }
@@ -1398,13 +1397,13 @@ export default function MDMEntry() {
               </View>
               <CustomTextInput
                 title={'PP'}
-                placeholder={`Max Limit: ${STUDENTS.PP_STUDENTS}`}
+                placeholder={`Max Limit: ${STUDENTS?.PP_STUDENTS}`}
                 value={pp.toString()}
                 onChangeText={text => {
                   if (text.length) {
-                    if (text > STUDENTS.PP_STUDENTS) {
+                    if (text > STUDENTS?.PP_STUDENTS) {
                       showToast('error', 'PP Limit Exceeded!');
-                      setPp(STUDENTS.PP_STUDENTS);
+                      setPp(STUDENTS?.PP_STUDENTS);
                     } else {
                       setPp(parseInt(text));
                     }
@@ -1416,13 +1415,13 @@ export default function MDMEntry() {
               {errPP && <Text style={styles.error}>{errPP}</Text>}
               <CustomTextInput
                 title={'Primary'}
-                placeholder={`Max Limit: ${STUDENTS.PRIMARY_STUDENTS}`}
+                placeholder={`Max Limit: ${STUDENTS?.PRIMARY_STUDENTS}`}
                 value={pry.toString()}
                 onChangeText={text => {
                   if (text.length) {
-                    if (text > STUDENTS.PRIMARY_STUDENTS) {
+                    if (text > STUDENTS?.PRIMARY_STUDENTS) {
                       showToast('error', 'Primary Limit Exceeded!');
-                      setPry(STUDENTS.PRIMARY_STUDENTS);
+                      setPry(STUDENTS?.PRIMARY_STUDENTS);
                     } else {
                       setPry(parseInt(text));
                     }
@@ -1668,17 +1667,21 @@ export default function MDMEntry() {
                               Day: {index + 1}
                             </Text>
                             <Text selectable style={styles.bankDataText}>
-                              Date: {entry.date}
+                              Date: {entry?.date}
                             </Text>
                             <Text selectable style={styles.bankDataText}>
-                              PP: {entry.pp}
+                              PP: {entry?.pp}
                             </Text>
                             <Text selectable style={styles.bankDataText}>
-                              Primary: {entry.pry}
+                              Primary: {entry?.pry}
                             </Text>
-                            <Text selectable style={styles.bankDataText}>
-                              Rice: {filteredRiceData[index]?.riceExpend} Kg.
-                            </Text>
+                            {
+                              filteredRiceData[index]?.riceExpend > 0 && (
+                                <Text selectable style={styles.bankDataText}>
+                                  Rice Expenses: {filteredRiceData[index]?.riceExpend} Kg.
+                                </Text>
+                              )
+                            }
                             <View
                               style={{
                                 flexDirection: 'row',
@@ -1693,13 +1696,13 @@ export default function MDMEntry() {
                                   size={'xsmall'}
                                   color={'darkorange'}
                                   onClick={() => {
-                                    setPp(entry.pp);
-                                    setPry(entry.pry);
-                                    setDate(getCurrentDateInput(entry.date));
+                                    setPp(entry?.pp);
+                                    setPry(entry?.pry);
+                                    setDate(getCurrentDateInput(entry?.date));
                                     setCurrentDate(
-                                      new Date(getCurrentDateInput(entry.date)),
+                                      new Date(getCurrentDateInput(entry?.date)),
                                     );
-                                    setDocId(entry.date);
+                                    setDocId(entry?.date);
                                     setLoader(false);
                                     setShowEntry(false);
                                     setShowUpdate(true);
@@ -2515,7 +2518,7 @@ export default function MDMEntry() {
               color={'green'}
               title={'Submit'}
               onClick={() => {
-                if (riceExpend === 0 || riceExpend === '') {
+                if (riceExpend === '') {
                   setErrRice('Please Enter Rice Expenditure');
                   return;
                 }
@@ -2624,7 +2627,7 @@ export default function MDMEntry() {
                     type={'number-pad'}
                     value={
                       StudentEditData.PP_STUDENTS
-                        ? StudentEditData.PP_STUDENTS.toString()
+                        ? StudentEditData.PP_STUDENTS?.toString()
                         : ''
                     }
                     onChangeText={text => {
@@ -2646,7 +2649,7 @@ export default function MDMEntry() {
                     type={'number-pad'}
                     value={
                       StudentEditData.PRIMARY_STUDENTS
-                        ? StudentEditData.PRIMARY_STUDENTS.toString()
+                        ? StudentEditData.PRIMARY_STUDENTS?.toString()
                         : ''
                     }
                     onChangeText={text => {
@@ -2668,7 +2671,7 @@ export default function MDMEntry() {
                     type={'number-pad'}
                     value={
                       StudentEditData.TOTAL_STUDENTS
-                        ? StudentEditData.TOTAL_STUDENTS.toString()
+                        ? StudentEditData.TOTAL_STUDENTS?.toString()
                         : ''
                     }
                     onChangeText={text => {
@@ -2769,7 +2772,7 @@ export default function MDMEntry() {
                     type={'number-pad'}
                     value={
                       StudentEntryData.PP_STUDENTS
-                        ? StudentEntryData.PP_STUDENTS.toString()
+                        ? StudentEntryData.PP_STUDENTS?.toString()
                         : ''
                     }
                     onChangeText={text => {
@@ -2791,7 +2794,7 @@ export default function MDMEntry() {
                     type={'number-pad'}
                     value={
                       StudentEntryData.PRIMARY_STUDENTS
-                        ? StudentEntryData.PRIMARY_STUDENTS.toString()
+                        ? StudentEntryData.PRIMARY_STUDENTS?.toString()
                         : ''
                     }
                     onChangeText={text => {
@@ -2813,7 +2816,7 @@ export default function MDMEntry() {
                     type={'number-pad'}
                     value={
                       StudentEntryData.TOTAL_STUDENTS
-                        ? StudentEntryData.TOTAL_STUDENTS.toString()
+                        ? StudentEntryData.TOTAL_STUDENTS?.toString()
                         : ''
                     }
                     onChangeText={text => {

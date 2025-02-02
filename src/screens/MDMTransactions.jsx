@@ -244,10 +244,10 @@ export default function MDMTransactions() {
     const month =
       monthNamesWithIndex[
         currentDate.getDate() > 10
-        ? currentDate.getMonth()
-        : currentDate.getMonth() === 0
-        ? 11
-        : currentDate.getMonth() - 1
+          ? currentDate.getMonth()
+          : currentDate.getMonth() === 0
+          ? 11
+          : currentDate.getMonth() - 1
       ].monthName;
     const year = currentDate.getFullYear();
     setMonth(month);
@@ -664,8 +664,7 @@ export default function MDMTransactions() {
             title={'Add New Transaction'}
             onClick={() => {
               setShowEntry(true);
-              const lastTransaction =
-                transactionState[transactionState.length - 1];
+              const lastTransaction = transactionState[0];
               setPpOB(lastTransaction.ppCB);
               setPryOB(lastTransaction.pryCB);
             }}
