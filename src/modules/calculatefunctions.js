@@ -827,13 +827,12 @@ export const btnArray = [
   {label: 'Forward', color: 'danger'},
 ];
 
-export const sortMonthwise = arr => {
-  return arr.sort((a, b) => {
-    // Assuming 'month' is the key in the object which contains the month name
-    const monthA = months.indexOf(a.month);
-    const monthB = months.indexOf(b.month);
-
-    return monthA - monthB;
+export const sortMonthwise = array => {
+  return array.sort((a, b) => {
+    if (a.year === b.year) {
+      return months.indexOf(a.month) - months.indexOf(b.month); // Sort by month
+    }
+    return a.year - b.year; // Sort by year
   });
 };
 
