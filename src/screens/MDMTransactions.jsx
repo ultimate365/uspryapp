@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Switch,
   BackHandler,
+  FlatList,
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import {THEME_COLOR} from '../utils/Colors';
@@ -701,85 +702,87 @@ export default function MDMTransactions() {
                 </View>
               )}
             </View>
-            {thisAccounTransactions
-              .slice(firstData, visibleItems)
-              .map((transaction, index) => (
-                <View style={styles.dataView} key={index}>
-                  <Text style={styles.label}>
-                    SL.:{' '}
-                    {transactionState.findIndex(i => i.id === transaction.id) +
-                      1}
-                  </Text>
-                  <Text style={styles.label}>Date: {transaction.date}</Text>
-                  <Text style={styles.label}>
-                    Transaction Type: {transaction.type}
-                  </Text>
-                  <Text style={styles.label}>
-                    Transaction Purpose:{'\n'} {transaction?.purpose}
-                  </Text>
-                  <Text style={styles.label}>
-                    Amount: {`₹ ${IndianFormat(transaction?.amount)}`}
-                  </Text>
-                  <Text style={styles.label}>
-                    Opening Balance:{' '}
-                    {`₹ ${IndianFormat(transaction?.openingBalance)}`}
-                  </Text>
-                  <Text style={styles.label}>
-                    Closing Balance:{' '}
-                    {`₹ ${IndianFormat(transaction?.closingBalance)}`}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      alignSelf: 'center',
-                      width: responsiveWidth(40),
-                    }}>
-                    <CustomButton
-                      title={'Edit'}
-                      size={'xsmall'}
-                      color={'darkorange'}
-                      onClick={() => {
-                        setShowEntry(false);
-                        setEditTransaction(transaction);
-                        setOrgTransaction(transaction);
-                        setShowEdit(true);
-                        setAmount(transaction.amount);
-                        setPurpose(transaction.purpose);
-                        setId(transaction.purpose);
-                        setType(transaction.type);
-                        if (transaction.type === 'DEBIT') {
-                          setIsEditEnabled(false);
-                        } else {
-                          setIsEditEnabled(true);
-                        }
-                        setDate(transaction.date);
-                        setCurrentDate(
-                          new Date(getCurrentDateInput(transaction.date)),
-                        );
-                        setPpOB(transaction.ppOB);
-                        setPpRC(transaction.ppRC);
-                        setPpCB(transaction.ppCB);
-                        setPryOB(transaction.pryOB);
-                        setPryRC(transaction.pryRC);
-                        setPryCB(transaction.pryCB);
-                        setPryCB(transaction.pryCB);
-                        setOpeningBalance(transaction.openingBalance);
-                        setPurposeText(transaction.transactionPurpose);
-                      }}
-                    />
-                    <CustomButton
-                      title={'Delete'}
-                      size={'xsmall'}
-                      color={'red'}
-                      onClick={() => {
-                        showConfirmDialog(transaction);
-                      }}
-                    />
+            <FlatList
+              data={thisAccounTransactions.slice(firstData, visibleItems)}
+              renderItem={({item, index}) => {
+                return (
+                  <View style={styles.dataView} key={index}>
+                    <Text style={styles.label}>
+                      SL.:{' '}
+                      {transactionState.findIndex(i => i.id === item?.id) + 1}
+                    </Text>
+                    <Text style={styles.label}>Date: {item?.date}</Text>
+                    <Text style={styles.label}>
+                      Transaction Type: {item?.type}
+                    </Text>
+                    <Text style={styles.label}>
+                      Transaction Purpose:{'\n'} {item?.purpose}
+                    </Text>
+                    <Text style={styles.label}>
+                      Amount: {`₹ ${IndianFormat(item?.amount)}`}
+                    </Text>
+                    <Text style={styles.label}>
+                      Opening Balance:{' '}
+                      {`₹ ${IndianFormat(item?.openingBalance)}`}
+                    </Text>
+                    <Text style={styles.label}>
+                      Closing Balance:{' '}
+                      {`₹ ${IndianFormat(item?.closingBalance)}`}
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        alignSelf: 'center',
+                        width: responsiveWidth(40),
+                      }}>
+                      <CustomButton
+                        title={'Edit'}
+                        size={'xsmall'}
+                        color={'darkorange'}
+                        onClick={() => {
+                          setShowEntry(false);
+                          setEditTransaction(item);
+                          setOrgTransaction(item);
+                          setShowEdit(true);
+                          setAmount(item?.amount);
+                          setPurpose(item?.purpose);
+                          setId(item?.purpose);
+                          setType(item?.type);
+                          if (item?.type === 'DEBIT') {
+                            setIsEditEnabled(false);
+                          } else {
+                            setIsEditEnabled(true);
+                          }
+                          setDate(item?.date);
+                          setCurrentDate(
+                            new Date(getCurrentDateInput(item?.date)),
+                          );
+                          setPpOB(item?.ppOB);
+                          setPpRC(item?.ppRC);
+                          setPpCB(item?.ppCB);
+                          setPryOB(item?.pryOB);
+                          setPryRC(item?.pryRC);
+                          setPryCB(item?.pryCB);
+                          setPryCB(item?.pryCB);
+                          setOpeningBalance(item?.openingBalance);
+                          setPurposeText(item?.transactionPurpose);
+                        }}
+                      />
+                      <CustomButton
+                        title={'Delete'}
+                        size={'xsmall'}
+                        color={'red'}
+                        onClick={() => {
+                          showConfirmDialog(item);
+                        }}
+                      />
+                    </View>
                   </View>
-                </View>
-              ))}
+                );
+              }}
+            />
             <View
               style={{
                 flexDirection: 'row',

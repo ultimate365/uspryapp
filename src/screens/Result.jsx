@@ -10,6 +10,7 @@ import {
   Linking,
   ImageBackground,
   Image,
+  FlatList,
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import {THEME_COLOR} from '../utils/Colors';
@@ -175,120 +176,124 @@ export default function Result() {
         )}
 
         {filteredData.length > 0 && showTable ? (
-          filteredData.slice(firstData, visibleItems).map((item, index) => {
-            return (
-              <View style={styles.dataView} key={index}>
-                <Image
-                  source={require('../assets/images/logo.png')}
-                  style={{
-                    width: responsiveWidth(50),
-                    height: responsiveWidth(50),
-                    position: 'absolute',
-                    alignSelf: 'center',
-                    opacity: 0.2,
-                    zIndex: -1,
-                  }}
-                />
-                <Text selectable style={styles.bankDataText}>
-                  Sl: {resultState.findIndex(i => i.id === item.id) + 1}
-                </Text>
-                <Text selectable style={styles.bankDataText}>
-                  Student Name: {item.name}
-                </Text>
-                <Text selectable style={styles.bankDataText}>
-                  Class: {item.class}
-                </Text>
-                <Text selectable style={styles.bankDataText}>
-                  Roll No.: {item.roll}
-                </Text>
-                <View>
-                  <Text selectable style={styles.benTitle}>
-                    প্রাপ্ত নম্বর
+          <FlatList
+            data={filteredData.slice(firstData, visibleItems)}
+            renderItem={({item, index}) => {
+              return (
+                <View style={styles.dataView} key={index}>
+                  <Image
+                    source={require('../assets/images/logo.png')}
+                    style={{
+                      width: responsiveWidth(50),
+                      height: responsiveWidth(50),
+                      position: 'absolute',
+                      alignSelf: 'center',
+                      opacity: 0.2,
+                      zIndex: -1,
+                    }}
+                  />
+                  <Text selectable style={styles.bankDataText}>
+                    Sl: {resultState.findIndex(i => i.id === item.id) + 1}
                   </Text>
-                  {item.class === 'PP' ? (
-                    <View>
-                      <Text selectable style={styles.label}>
-                        বাংলা: {item.s1}
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        ইংরাজী: {item.s2}
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        গণিত: {item.s3}
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        মোট প্রাপ্ত নম্বর: {item.total}
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        শতকরা: {item.percent}%
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        গ্রেড: {item.grade}
-                      </Text>
-                    </View>
-                  ) : item.class === 'CLASS I' || item.class === 'CLASS II' ? (
-                    <View>
-                      <Text selectable style={styles.label}>
-                        সংযোগ স্থাপনে সক্ষমতা: {item.s1}
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        সমন্বয় সাধনে সক্ষমতা: {item.s2}
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        সমস্যা সমাধানে সক্ষমতা: {item.s3}
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        মানসিক ও শারীরিক সমন্বয় সাধন: {item.s4}
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        হাতের কাজ: {item.s5}
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        মোট প্রাপ্ত নম্বর: {item.total}
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        শতকরা: {item.percent}%
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        গ্রেড: {item.grade}
-                      </Text>
-                    </View>
-                  ) : item.class === 'CLASS III' ||
-                    item.class === 'CLASS IV' ? (
-                    <View>
-                      <Text selectable style={styles.label}>
-                        বাংলা: {item.s1}
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        ইংরাজী: {item.s2}
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        গণিত: {item.s3}
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        আমাদের পরিবেশ: {item.s4}
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        স্বাস্থ্য ও শারীরশিক্ষা: {item.s5}
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        হাতের কাজ: {item.s6}
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        মোট প্রাপ্ত নম্বর: {item.total}
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        শতকরা: {item.percent}%
-                      </Text>
-                      <Text selectable style={styles.label}>
-                        গ্রেড: {item.grade}
-                      </Text>
-                    </View>
-                  ) : null}
+                  <Text selectable style={styles.bankDataText}>
+                    Student Name: {item.name}
+                  </Text>
+                  <Text selectable style={styles.bankDataText}>
+                    Class: {item.class}
+                  </Text>
+                  <Text selectable style={styles.bankDataText}>
+                    Roll No.: {item.roll}
+                  </Text>
+                  <View>
+                    <Text selectable style={styles.benTitle}>
+                      প্রাপ্ত নম্বর
+                    </Text>
+                    {item.class === 'PP' ? (
+                      <View>
+                        <Text selectable style={styles.label}>
+                          বাংলা: {item.s1}
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          ইংরাজী: {item.s2}
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          গণিত: {item.s3}
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          মোট প্রাপ্ত নম্বর: {item.total}
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          শতকরা: {item.percent}%
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          গ্রেড: {item.grade}
+                        </Text>
+                      </View>
+                    ) : item.class === 'CLASS I' ||
+                      item.class === 'CLASS II' ? (
+                      <View>
+                        <Text selectable style={styles.label}>
+                          সংযোগ স্থাপনে সক্ষমতা: {item.s1}
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          সমন্বয় সাধনে সক্ষমতা: {item.s2}
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          সমস্যা সমাধানে সক্ষমতা: {item.s3}
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          মানসিক ও শারীরিক সমন্বয় সাধন: {item.s4}
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          হাতের কাজ: {item.s5}
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          মোট প্রাপ্ত নম্বর: {item.total}
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          শতকরা: {item.percent}%
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          গ্রেড: {item.grade}
+                        </Text>
+                      </View>
+                    ) : item.class === 'CLASS III' ||
+                      item.class === 'CLASS IV' ? (
+                      <View>
+                        <Text selectable style={styles.label}>
+                          বাংলা: {item.s1}
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          ইংরাজী: {item.s2}
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          গণিত: {item.s3}
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          আমাদের পরিবেশ: {item.s4}
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          স্বাস্থ্য ও শারীরশিক্ষা: {item.s5}
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          হাতের কাজ: {item.s6}
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          মোট প্রাপ্ত নম্বর: {item.total}
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          শতকরা: {item.percent}%
+                        </Text>
+                        <Text selectable style={styles.label}>
+                          গ্রেড: {item.grade}
+                        </Text>
+                      </View>
+                    ) : null}
+                  </View>
                 </View>
-              </View>
-            );
-          })
+              );
+            }}
+          />
         ) : (
           <Text selectable style={styles.bankDataText}>
             No Entry found for the selected Year.

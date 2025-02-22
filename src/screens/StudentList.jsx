@@ -8,6 +8,7 @@ import {
   Switch,
   BackHandler,
   Linking,
+  FlatList,
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import {THEME_COLOR} from '../utils/Colors';
@@ -77,6 +78,8 @@ export default function StudentList() {
     birthdate: todayInString(),
     student_name: '',
     mother_name: '',
+    gender: 'BOYS',
+    aadhaar: '',
   });
   const [editStudent, setEditStudent] = useState({
     nclass: 0,
@@ -90,6 +93,8 @@ export default function StudentList() {
     birthdate: todayInString(),
     student_name: '',
     mother_name: '',
+    gender: 'BOYS',
+    aadhaar: '',
   });
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -350,93 +355,100 @@ export default function StudentList() {
         </View>
 
         {filteredData.length > 0 && showTable ? (
-          filteredData.slice(firstData, visibleItems).map((row, index) => {
-            return (
-              <View style={styles.dataView} key={index}>
-                <Text selectable style={styles.bankDataText}>
-                  Sl: {studentState.findIndex(i => i.id === row.id) + 1}
-                </Text>
-                <Text selectable style={styles.bankDataText}>
-                  Student Name: {row.student_name}
-                </Text>
-                <Text selectable style={styles.bankDataText}>
-                  Class: {row.class?.split(' (A)')[0]}
-                </Text>
-                <Text selectable style={styles.bankDataText}>
-                  Roll No.: {row.roll_no}
-                </Text>
-                <Text selectable style={styles.bankDataText}>
-                  Father's Name: {row.father_name}
-                </Text>
-                <Text selectable style={styles.bankDataText}>
-                  Mother's Name: {row.mother_name}
-                </Text>
-                {access && (
+          <FlatList
+            data={filteredData.slice(firstData, visibleItems)}
+            showsHorizontalScrollIndicator={false}
+            renderItem={({item, index}) => {
+              return (
+                <View style={styles.dataView} key={index}>
                   <Text selectable style={styles.bankDataText}>
-                    Student ID: {row.student_id}
+                    Sl: {studentState.findIndex(i => i.id === item.id) + 1}
                   </Text>
-                )}
-                {access === 'teacher' && (
-                  <View>
-                    {row.mobile === '0' ? null : row.mobile ===
-                      '9999999999' ? null : row.mobile ===
-                      '7872882343' ? null : row.mobile ===
-                      '7679230482' ? null : (
-                      <TouchableOpacity
+                  <Text selectable style={styles.bankDataText}>
+                    Student Name: {item.student_name}
+                  </Text>
+                  <Text selectable style={styles.bankDataText}>
+                    Class: {item.class?.split(' (A)')[0]}
+                  </Text>
+                  <Text selectable style={styles.bankDataText}>
+                    Roll No.: {item.roll_no}
+                  </Text>
+                  <Text selectable style={styles.bankDataText}>
+                    Father's Name: {item.father_name}
+                  </Text>
+                  <Text selectable style={styles.bankDataText}>
+                    Mother's Name: {item.mother_name}
+                  </Text>
+                  {access && (
+                    <Text selectable style={styles.bankDataText}>
+                      Student ID: {item.student_id}
+                    </Text>
+                  )}
+                  {access === 'teacher' && (
+                    <View>
+                      {item.mobile === '0' ? null : item.mobile ===
+                        '9999999999' ? null : item.mobile ===
+                        '7872882343' ? null : item.mobile ===
+                        '7679230482' ? null : (
+                        <TouchableOpacity
+                          style={{
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            alignSelf: 'center',
+                            flexDirection: 'column',
+                            flexWrap: 'wrap',
+                          }}
+                          onPress={async () =>
+                            await Linking.openURL(
+                              `tel:${parseInt(item.mobile)}`,
+                            )
+                          }>
+                          <Text selectable style={styles.bankDataText}>
+                            Mobile: {item.mobile}
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                      <Text selectable style={styles.bankDataText}>
+                        Date of Birth: {item.birthdate}
+                      </Text>
+                      <View
                         style={{
-                          justifyContent: 'center',
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
                           alignItems: 'center',
                           alignSelf: 'center',
-                          flexDirection: 'column',
-                          flexWrap: 'wrap',
-                        }}
-                        onPress={async () =>
-                          await Linking.openURL(`tel:${parseInt(row.mobile)}`)
-                        }>
-                        <Text selectable style={styles.bankDataText}>
-                          Mobile: {row.mobile}
-                        </Text>
-                      </TouchableOpacity>
-                    )}
-                    <Text selectable style={styles.bankDataText}>
-                      Date of Birth: {row.birthdate}
-                    </Text>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        alignSelf: 'center',
-                        width: responsiveWidth(50),
-                      }}>
-                      <CustomButton
-                        title={'Edit'}
-                        color={'orange'}
-                        size={'xsmall'}
-                        onClick={() => {
-                          setEditStudent(row);
-                          setShowEditModal(true);
-                        }}
-                      />
-                      <CustomButton
-                        title={'Delete'}
-                        color={'red'}
-                        size={'xsmall'}
-                        onClick={() => {
-                          showConfirmDialog(row);
-                        }}
-                      />
+                          width: responsiveWidth(50),
+                        }}>
+                        <CustomButton
+                          title={'Edit'}
+                          color={'orange'}
+                          size={'xsmall'}
+                          onClick={() => {
+                            setEditStudent(item);
+                            setShowEditModal(true);
+                          }}
+                        />
+                        <CustomButton
+                          title={'Delete'}
+                          color={'red'}
+                          size={'xsmall'}
+                          onClick={() => {
+                            showConfirmDialog(item);
+                          }}
+                        />
+                      </View>
                     </View>
-                  </View>
-                )}
-              </View>
-            );
-          })
+                  )}
+                </View>
+              );
+            }}
+          />
         ) : (
           <Text selectable style={styles.bankDataText}>
             No Entry found for the selected Year.
           </Text>
         )}
+
         <View
           style={{
             flexDirection: 'row',
@@ -657,6 +669,19 @@ export default function StudentList() {
                   }
                 }}
               />
+
+              <CustomTextInput
+                placeholder={'Gender e.g. "BOYS" OR "GIRLS"'}
+                title={'Gender'}
+                type={'number-pad'}
+                value={editStudent.gender}
+                onChangeText={e => {
+                  setEditStudent({
+                    ...editStudent,
+                    gender: e,
+                  });
+                }}
+              />
               <CustomTextInput
                 placeholder={'Student ID'}
                 title={'Student ID'}
@@ -681,6 +706,18 @@ export default function StudentList() {
                   });
                 }}
               />
+              <CustomTextInput
+                placeholder={'Aadhaar No.'}
+                title={'Aadhaar No.'}
+                type={'number-pad'}
+                value={editStudent.aadhaar}
+                onChangeText={e => {
+                  setEditStudent({
+                    ...editStudent,
+                    aadhaar: parseInt(e),
+                  });
+                }}
+              />
               <View
                 style={{
                   flexDirection: 'row',
@@ -688,6 +725,7 @@ export default function StudentList() {
                   alignItems: 'center',
                   alignSelf: 'center',
                   width: responsiveWidth(60),
+                  marginBottom: responsiveHeight(2),
                 }}>
                 <CustomButton
                   marginTop={responsiveHeight(1)}
@@ -936,6 +974,18 @@ export default function StudentList() {
                 }}
               />
               <CustomTextInput
+                placeholder={'Gender e.g. "BOYS" OR "GIRLS"'}
+                title={'Gender'}
+                value={addStudent.gender}
+                onChangeText={e => {
+                  setAddStudent({
+                    ...addStudent,
+                    gender: e,
+                  });
+                }}
+              />
+
+              <CustomTextInput
                 placeholder={'Mobile Number'}
                 title={'Mobile Number'}
                 type={'number-pad'}
@@ -947,6 +997,18 @@ export default function StudentList() {
                   });
                 }}
               />
+              <CustomTextInput
+                placeholder={'Aadhaar No.'}
+                title={'Aadhaar No.'}
+                type={'number-pad'}
+                value={addStudent.aadhaar}
+                onChangeText={e => {
+                  setAddStudent({
+                    ...addStudent,
+                    aadhaar: parseInt(e),
+                  });
+                }}
+              />
               <View
                 style={{
                   flexDirection: 'row',
@@ -954,6 +1016,7 @@ export default function StudentList() {
                   alignItems: 'center',
                   alignSelf: 'center',
                   width: responsiveWidth(60),
+                  marginBottom: responsiveHeight(2),
                 }}>
                 <CustomButton
                   marginTop={responsiveHeight(1)}

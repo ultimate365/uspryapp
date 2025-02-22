@@ -21,35 +21,10 @@ import {
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
 import {useGlobalContext} from '../context/Store';
-import {
-  BLOCK,
-  BUILDING,
-  CIRCLE,
-  DRINKING_WATER,
-  GIRLS_TOILET,
-  HOI_MOBILE_NO,
-  JLNO,
-  KHATIAN_NO,
-  LAST_DAY_OF_INSPECTION,
-  MEDIUM,
-  MOUZA,
-  PLOT_NO,
-  PO,
-  PS,
-  SCHNO,
-  SCHOOL_AREA,
-  SCHOOL_RECOGNITION_DATE,
-  SCHOOLNAME,
-  UDISE_CODE,
-  VILL,
-  WARD_NO,
-  WEBSITE,
-} from '../modules/constants';
+import {LAST_DAY_OF_INSPECTION, WEBSITE} from '../modules/constants';
 import {showToast} from '../modules/Toaster';
 import {
-  createDownloadLink,
   getCurrentDateInput,
-  getSubmitDateInput,
   monthNamesWithIndex,
   sortMonthwise,
   todayInString,
@@ -59,15 +34,11 @@ import DateTimePickerAndroid from '@react-native-community/datetimepicker';
 export default function TeachersReturn() {
   const {state, returnState, setReturnState, setActiveTab} = useGlobalContext();
   const access = state?.ACCESS;
-  const user = state?.USER;
   const isFocused = useIsFocused();
   const navigation = useNavigation();
   const [loader, setLoader] = useState(false);
-  const [showRemark, setShowRemark] = useState(false);
   const [remarks, setRemarks] = useState('');
   const [addRemark, setAddRemark] = useState(false);
-  const [showFrontPage, setShowFrontPage] = useState(true);
-  const [showBackPage, setShowBackPage] = useState(true);
   const [workingDays, setWorkingDays] = useState(24);
   const [editTeacher, setEditTeacher] = useState({
     cast: '',
@@ -138,17 +109,11 @@ export default function TeachersReturn() {
   const year = currentDate?.getFullYear();
   const [yearArray, setYearArray] = useState([]);
   const [allEnry, setAllEnry] = useState([]);
-  const [filteredEntry, setFilteredEntry] = useState([]);
   const [moreFilteredEntry, setMoreFilteredEntry] = useState([]);
   const [entryMonths, setEntryMonths] = useState([]);
-  const [serviceArray, setServiceArray] = useState([]);
   const [showMonthSelection, setShowMonthSelection] = useState(false);
   const [selectedYear, setSelectedYear] = useState('');
-  const [returnYear, setReturnYear] = useState('');
-  const [returnMonth, setReturnMonth] = useState('');
-  const getMonth = () => {
-    return `${month.toUpperCase()} of ${year}`;
-  };
+
   const getID = () => {
     return `${month}-${year}`;
   };
@@ -202,11 +167,9 @@ export default function TeachersReturn() {
       });
       setSelectedYear(selectedValue);
       setShowMonthSelection(true);
-      setFilteredEntry(x);
       setMoreFilteredEntry(x);
       setEntryMonths(uniqArray(y));
     } else {
-      setFilteredEntry([]);
       setSelectedYear('');
       setShowMonthSelection(false);
       showToast('error', 'Please select a year');
@@ -252,7 +215,6 @@ export default function TeachersReturn() {
         return x;
       }
     });
-    setFilteredEntry(x);
     setMonthText(month.monthName);
   };
 
@@ -292,7 +254,6 @@ export default function TeachersReturn() {
     });
     setYearArray(x);
     setAllEnry(array);
-    setFilteredEntry(array);
     setLoader(false);
   };
   const getArrayLength = year => {
@@ -313,8 +274,6 @@ export default function TeachersReturn() {
       setReturnState([...returnState, entry]);
       showToast('success', 'Monthly Data Submitted Successfully!');
       setLoader(false);
-      setShowFrontPage(true);
-      setShowBackPage(true);
     } catch (error) {
       console.log(error);
       setLoader(false);

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Switch,
   BackHandler,
+  FlatList,
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import {THEME_COLOR} from '../utils/Colors';
@@ -132,10 +133,10 @@ export default function VECTransactions() {
     const month =
       monthNamesWithIndex[
         currentDate.getDate() > 10
-        ? currentDate.getMonth()
-        : currentDate.getMonth() === 0
-        ? 11
-        : currentDate.getMonth() - 1
+          ? currentDate.getMonth()
+          : currentDate.getMonth() === 0
+          ? 11
+          : currentDate.getMonth() - 1
       ].monthName;
     const year = currentDate.getFullYear();
     return `${month}-${year}`;
@@ -433,68 +434,70 @@ export default function VECTransactions() {
                 </View>
               )}
             </View>
-            {allTransactions
-              .slice(firstData, visibleItems)
-              .map((transaction, index) => (
-                <View style={styles.dataView} key={index}>
-                  <Text style={styles.label}>
-                    SL.:{' '}
-                    {allFTransactions.findIndex(i => i.id === transaction.id) +
-                      1}
-                  </Text>
-                  <Text style={styles.label}>Date: {transaction.date}</Text>
-                  <Text style={styles.label}>
-                    Transaction Type: {transaction.type}
-                  </Text>
-                  <Text style={styles.label}>
-                    Transaction Purpose:{'\n'} {transaction?.purpose}
-                  </Text>
-                  <Text style={styles.label}>
-                    Amount: {`₹ ${IndianFormat(transaction?.amount)}`}
-                  </Text>
-                  <Text style={styles.label}>
-                    Opening Balance:{' '}
-                    {`₹ ${IndianFormat(transaction?.openingBalance)}`}
-                  </Text>
-                  <Text style={styles.label}>
-                    Closing Balance:{' '}
-                    {`₹ ${IndianFormat(transaction?.closingBalance)}`}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      alignSelf: 'center',
-                      width: responsiveWidth(40),
-                    }}>
-                    <CustomButton
-                      title={'Edit'}
-                      size={'xsmall'}
-                      color={'darkorange'}
-                      onClick={() => {
-                        setShowVECEnrty(false);
-                        setShowVECEdit(true);
-                        setEditVecObj(transaction);
-                        setOrgVecObj(transaction);
-                        if (transaction.type == 'DEBIT') {
-                          setIsEditEnabled(false);
-                        } else {
-                          setIsEditEnabled(true);
-                        }
-                      }}
-                    />
-                    <CustomButton
-                      title={'Delete'}
-                      size={'xsmall'}
-                      color={'red'}
-                      onClick={() => {
-                        showConfirmDialog(transaction);
-                      }}
-                    />
+            <FlatList
+              data={allTransactions.slice(firstData, visibleItems)}
+              renderItem={({item, index}) => {
+                return (
+                  <View style={styles.dataView} key={index}>
+                    <Text style={styles.label}>
+                      SL.:{' '}
+                      {allFTransactions.findIndex(i => i.id === item.id) + 1}
+                    </Text>
+                    <Text style={styles.label}>Date: {item.date}</Text>
+                    <Text style={styles.label}>
+                      Transaction Type: {item.type}
+                    </Text>
+                    <Text style={styles.label}>
+                      Transaction Purpose:{'\n'} {item?.purpose}
+                    </Text>
+                    <Text style={styles.label}>
+                      Amount: {`₹ ${IndianFormat(item?.amount)}`}
+                    </Text>
+                    <Text style={styles.label}>
+                      Opening Balance:{' '}
+                      {`₹ ${IndianFormat(item?.openingBalance)}`}
+                    </Text>
+                    <Text style={styles.label}>
+                      Closing Balance:{' '}
+                      {`₹ ${IndianFormat(item?.closingBalance)}`}
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        alignSelf: 'center',
+                        width: responsiveWidth(40),
+                      }}>
+                      <CustomButton
+                        title={'Edit'}
+                        size={'xsmall'}
+                        color={'darkorange'}
+                        onClick={() => {
+                          setShowVECEnrty(false);
+                          setShowVECEdit(true);
+                          setEditVecObj(item);
+                          setOrgVecObj(item);
+                          if (item.type == 'DEBIT') {
+                            setIsEditEnabled(false);
+                          } else {
+                            setIsEditEnabled(true);
+                          }
+                        }}
+                      />
+                      <CustomButton
+                        title={'Delete'}
+                        size={'xsmall'}
+                        color={'red'}
+                        onClick={() => {
+                          showConfirmDialog(item);
+                        }}
+                      />
+                    </View>
                   </View>
-                </View>
-              ))}
+                );
+              }}
+            />
             <View
               style={{
                 flexDirection: 'row',

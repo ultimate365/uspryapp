@@ -19,17 +19,17 @@ export const STUDENTRECORD = [
   {
     YEAR: "2025",
     PP_STUDENTS: 8,
-    PRIMARY_STUDENTS: 38,
-    PRIMARY_BOYS: 21,
+    PRIMARY_STUDENTS: 37,
+    PRIMARY_BOYS: 20,
     PRIMARY_GIRLS: 25,
-    TOTAL_STUDENTS: 46,
+    TOTAL_STUDENTS: 45,
   },
 ];
-export const PP_STUDENTS = 6;
-export const PRIMARY_STUDENTS = 40;
-export const PRIMARY_BOYS = 22;
-export const PRIMARY_GIRLS = 18;
-export const TOTAL_STUDENTS = 46;
+export const PP_STUDENTS = 8;
+export const PRIMARY_STUDENTS = 37;
+export const PRIMARY_BOYS = 20;
+export const PRIMARY_GIRLS = 25;
+export const TOTAL_STUDENTS = 45;
 export const SCHOOLNAME = 'UTTAR SEHAGORI PRIMARY SCHOOL';
 export const SCHOOLBENGALINAME = 'উত্তর সেহাগড়ী প্রাথমিক বিদ্যালয়';
 export const SCHOOL_SPLASH_BENGALINAME = [
@@ -49,7 +49,7 @@ export const CCH_NAME = [
   {name: 'LAKSHMI DAS', gender: 'FEMALE', cast: 'OBC', payment: 'BANK'},
   ,
 ];
-export const UDISE_CODE = 19160213201;
+export const UDISE_CODE = "19160213201";
 export const HOI_MOBILE_NO = '9933684468';
 export const NGO_SHG = 'SUPRAVAT+DISHARI';
 const THIS_YEAR = new Date().getFullYear();
@@ -84,8 +84,9 @@ export const classWiseAge = [
   {className: 'CLASS V', benClassName: 'পঞ্চম শ্রেনী', age: 10},
 ];
 export const TELEGRAM_TEACHER_GROUP = 'https://t.me/+LZsOjnE9mBAxZjI9';
-export const appVersion = 1.14;
+export const appVersion = 1.15;
 export const AppURL =
   'https://drive.google.com/file/d/1FDcOHPETUb5iOA32SnOEUqPUiUkrljKE/view?usp=drive_link';
 export const WEBSITE = `https://uspry.vercel.app`;
 export const ADMISSION_STATUS = 'PY5G28aVQ3D3Q310GAKV';
+export const SCHOOL_EMAIL = "usprys@gmail.com";

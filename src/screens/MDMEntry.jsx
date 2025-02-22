@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   BackHandler,
   Linking,
+  FlatList,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {THEME_COLOR} from '../utils/Colors';
@@ -956,7 +957,9 @@ export default function MDMEntry() {
                 const filteredEntry = riceState.filter(
                   el => el.id !== entry?.id,
                 );
-                const thisEntry = riceState.filter(el => el.id === entry?.id)[0];
+                const thisEntry = riceState.filter(
+                  el => el.id === entry?.id,
+                )[0];
                 setRiceState(filteredEntry);
                 setRiceOB(thisEntry?.riceOB);
                 setRiceCB(thisEntry?.riceOB);
@@ -1297,6 +1300,7 @@ export default function MDMEntry() {
               type={'number-pad'}
               placeholder={`Max Limit: ${STUDENTS?.PP_STUDENTS}`}
               value={pp.toString()}
+              editable={STUDENTS?.PRIMARY_STUDENTS !== undefined}
               onChangeText={text => {
                 if (text.length) {
                   if (text > STUDENTS?.PP_STUDENTS) {
@@ -1316,6 +1320,7 @@ export default function MDMEntry() {
               type={'number-pad'}
               placeholder={`Max Limit: ${STUDENTS?.PRIMARY_STUDENTS}`}
               value={pry.toString()}
+              editable={STUDENTS?.PRIMARY_STUDENTS!== undefined}
               onChangeText={text => {
                 if (text.length) {
                   if (text > STUDENTS?.PRIMARY_STUDENTS) {
@@ -1399,6 +1404,7 @@ export default function MDMEntry() {
                 title={'PP'}
                 placeholder={`Max Limit: ${STUDENTS?.PP_STUDENTS}`}
                 value={pp.toString()}
+                editable={STUDENTS?.PP_STUDENTS !== undefined}
                 onChangeText={text => {
                   if (text.length) {
                     if (text > STUDENTS?.PP_STUDENTS) {
@@ -1417,6 +1423,7 @@ export default function MDMEntry() {
                 title={'Primary'}
                 placeholder={`Max Limit: ${STUDENTS?.PRIMARY_STUDENTS}`}
                 value={pry.toString()}
+                editable={STUDENTS?.PRIMARY_STUDENTS !== undefined}
                 onChangeText={text => {
                   if (text.length) {
                     if (text > STUDENTS?.PRIMARY_STUDENTS) {
@@ -1653,118 +1660,145 @@ export default function MDMEntry() {
                   />
                 )}
                 {filteredData.length > 0 ? (
-                  filteredData.map((entry, index) => {
-                    return (
-                      <React.Fragment key={index}>
-                        <View style={styles.dataView}>
-                          <View
-                            style={{
-                              flexDirection: 'column',
-                              justifyContent: 'space-between',
-                              alignItems: 'center',
-                            }}>
-                            <Text selectable style={styles.bankDataText}>
-                              Day: {index + 1}
-                            </Text>
-                            <Text selectable style={styles.bankDataText}>
-                              Date: {entry?.date}
-                            </Text>
-                            <Text selectable style={styles.bankDataText}>
-                              PP: {entry?.pp}
-                            </Text>
-                            <Text selectable style={styles.bankDataText}>
-                              Primary: {entry?.pry}
-                            </Text>
-                            {
-                              filteredRiceData[index]?.riceExpend > 0 && (
-                                <Text selectable style={styles.bankDataText}>
-                                  Rice Expenses: {filteredRiceData[index]?.riceExpend} Kg.
-                                </Text>
-                              )
-                            }
+                  <FlatList
+                    data={filteredData}
+                    renderItem={({item, index}) => {
+                      return (
+                        <React.Fragment key={index}>
+                          <View style={styles.dataView}>
                             <View
                               style={{
-                                flexDirection: 'row',
+                                flexDirection: 'column',
                                 justifyContent: 'space-between',
                                 alignItems: 'center',
-                                alignSelf: 'center',
                               }}>
+                              <Text selectable style={styles.bankDataText}>
+                                Day: {index + 1}
+                              </Text>
+                              <Text selectable style={styles.bankDataText}>
+                                Date: {item?.date}
+                              </Text>
+                              <Text selectable style={styles.bankDataText}>
+                                PP: {item?.pp}
+                              </Text>
+                              <Text selectable style={styles.bankDataText}>
+                                Primary: {item?.pry}
+                              </Text>
+                              {filteredRiceData[index]?.riceExpend > 0 && (
+                                <View>
+                                  <Text selectable style={styles.bankDataText}>
+                                    Rice Opening:{' '}
+                                    {filteredRiceData[index]?.riceOB} Kg.
+                                  </Text>
+                                  {filteredRiceData[index]?.riceGiven > 0 && (
+                                    <Text
+                                      selectable
+                                      style={styles.bankDataText}>
+                                      Rice Received:-
+                                      {filteredRiceData[index]?.riceGiven},{' '}
+                                    </Text>
+                                  )}
+                                  <Text selectable style={styles.bankDataText}>
+                                    Rice Expenses:{' '}
+                                    {filteredRiceData[index]?.riceExpend} Kg.
+                                  </Text>
+                                  <Text selectable style={styles.bankDataText}>
+                                    Rice Closing:{' '}
+                                    {filteredRiceData[index]?.riceCB} Kg.
+                                  </Text>
+                                </View>
+                              )}
                               <View
-                                style={{marginHorizontal: responsiveWidth(2)}}>
-                                <CustomButton
-                                  title={'Edit'}
-                                  size={'xsmall'}
-                                  color={'darkorange'}
-                                  onClick={() => {
-                                    setPp(entry?.pp);
-                                    setPry(entry?.pry);
-                                    setDate(getCurrentDateInput(entry?.date));
-                                    setCurrentDate(
-                                      new Date(getCurrentDateInput(entry?.date)),
-                                    );
-                                    setDocId(entry?.date);
-                                    setLoader(false);
-                                    setShowEntry(false);
-                                    setShowUpdate(true);
-                                    setShowMonthlyReport(false);
-                                    setShowDataTable(false);
-                                    setShowMonthSelection(false);
-                                  }}
-                                />
-                              </View>
-                              <View
-                                style={{marginHorizontal: responsiveWidth(2)}}>
-                                <CustomButton
-                                  title={'Delete'}
-                                  size={'xsmall'}
-                                  color={'red'}
-                                  onClick={() => showConfirmDialog(entry)}
-                                />
+                                style={{
+                                  flexDirection: 'row',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center',
+                                  alignSelf: 'center',
+                                }}>
+                                <View
+                                  style={{
+                                    marginHorizontal: responsiveWidth(2),
+                                  }}>
+                                  <CustomButton
+                                    title={'Edit'}
+                                    size={'xsmall'}
+                                    color={'darkorange'}
+                                    onClick={() => {
+                                      setPp(item?.pp);
+                                      setPry(item?.pry);
+                                      setDate(getCurrentDateInput(item?.date));
+                                      setCurrentDate(
+                                        new Date(
+                                          getCurrentDateInput(item?.date),
+                                        ),
+                                      );
+                                      setDocId(item?.date);
+                                      setLoader(false);
+                                      setShowEntry(false);
+                                      setShowUpdate(true);
+                                      setShowMonthlyReport(false);
+                                      setShowDataTable(false);
+                                      setShowMonthSelection(false);
+                                    }}
+                                  />
+                                </View>
+                                <View
+                                  style={{
+                                    marginHorizontal: responsiveWidth(2),
+                                  }}>
+                                  <CustomButton
+                                    title={'Delete'}
+                                    size={'xsmall'}
+                                    color={'red'}
+                                    onClick={() => showConfirmDialog(item)}
+                                  />
+                                </View>
                               </View>
                             </View>
                           </View>
-                        </View>
-                        {filteredData.length === index + 1 && (
-                          <View
-                            style={[
-                              styles.dataView,
-                              {backgroundColor: 'lightgoldenrodyellow'},
-                            ]}>
-                            <Text selectable style={styles.bankDataText}>
-                              Total
-                            </Text>
-                            <Text selectable style={styles.bankDataText}>
-                              Total MDM Days:{' '}
-                              {filteredData.length > 1
-                                ? `${filteredData.length} Days`
-                                : `${filteredData.length} Day`}
-                            </Text>
-                            <Text selectable style={styles.bankDataText}>
-                              PP Total Meal: {ppTotalMeal}
-                            </Text>
-                            <Text selectable style={styles.bankDataText}>
-                              Primary Total Meal: {pryTotalMeal}
-                            </Text>
-                            <Text selectable style={styles.bankDataText}>
-                              Total Meal- {ppTotalMeal + pryTotalMeal}
-                            </Text>
-                            <Text selectable style={styles.bankDataText}>
-                              MDM Cost ={' '}
-                              {`${ppTotalMeal} X ₹ ${thisMonthMDMAllowance} + ${pryTotalMeal} X ₹${thisMonthMDMAllowance} = `}
-                              ₹ {IndianFormat(thisMonthTotalCost)}
-                            </Text>
-                            <Text selectable style={styles.bankDataText}>
-                              Total Rice Given: {totalRiceGiven}Kg.
-                            </Text>
-                            <Text selectable style={styles.bankDataText}>
-                              Rice Consumption: {thisMonthTotalRiceConsumption}
-                              Kg.
-                            </Text>
-                          </View>
-                        )}
-                      </React.Fragment>
-                    );
-                  })
+                          {filteredData.length === index + 1 && (
+                            <View
+                              style={[
+                                styles.dataView,
+                                {backgroundColor: 'lightgoldenrodyellow'},
+                              ]}>
+                              <Text selectable style={styles.bankDataText}>
+                                Total
+                              </Text>
+                              <Text selectable style={styles.bankDataText}>
+                                Total MDM Days:{' '}
+                                {filteredData.length > 1
+                                  ? `${filteredData.length} Days`
+                                  : `${filteredData.length} Day`}
+                              </Text>
+                              <Text selectable style={styles.bankDataText}>
+                                PP Total Meal: {ppTotalMeal}
+                              </Text>
+                              <Text selectable style={styles.bankDataText}>
+                                Primary Total Meal: {pryTotalMeal}
+                              </Text>
+                              <Text selectable style={styles.bankDataText}>
+                                Total Meal- {ppTotalMeal + pryTotalMeal}
+                              </Text>
+                              <Text selectable style={styles.bankDataText}>
+                                MDM Cost ={' '}
+                                {`${ppTotalMeal} X ₹ ${thisMonthMDMAllowance} + ${pryTotalMeal} X ₹${thisMonthMDMAllowance} = `}
+                                ₹ {IndianFormat(thisMonthTotalCost)}
+                              </Text>
+                              <Text selectable style={styles.bankDataText}>
+                                Total Rice Given: {totalRiceGiven}Kg.
+                              </Text>
+                              <Text selectable style={styles.bankDataText}>
+                                Rice Consumption:{' '}
+                                {thisMonthTotalRiceConsumption}
+                                Kg.
+                              </Text>
+                            </View>
+                          )}
+                        </React.Fragment>
+                      );
+                    }}
+                  />
                 ) : (
                   <Text selectable style={styles.bankDataText}>
                     No Entry found for the selected Year.

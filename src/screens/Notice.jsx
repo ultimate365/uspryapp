@@ -11,6 +11,7 @@ import {
   Image,
   Switch,
   DeviceEventEmitter,
+  FlatList,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {THEME_COLOR} from '../utils/Colors';
@@ -229,8 +230,8 @@ const Notice = () => {
       .doc(el.id)
       .delete()
       .then(async () => {
-        setNoticeState(noticeState.filter(item => item.id !== el.id));
-        setAllNotices(allNotices.filter(item => item.id !== el.id));
+        setNoticeState(noticeState.filter(item => item?.id !== el.id));
+        setAllNotices(allNotices.filter(item => item?.id !== el.id));
         setNoticeUpdateTime(Date.now());
         await firestore()
           .collection('noticeReply')
@@ -245,7 +246,7 @@ const Notice = () => {
               async (item, index) =>
                 await firestore()
                   .collection('noticeReply')
-                  .doc(item.id)
+                  .doc(item?.id)
                   .delete()
                   .then(() =>
                     showToast(
@@ -727,9 +728,11 @@ const Notice = () => {
                 )}
               </View>
             )}
-            {showAddNotice && allNotices.length
-              ? allNotices.slice(firstData, visibleItems).map((el, ind) => {
-                  let diff = differenceInDays(el.date, Date.now());
+            {showAddNotice && allNotices.length ? (
+              <FlatList
+                data={allNotices.slice(firstData, visibleItems)}
+                renderItem={({item, index}) => {
+                  let diff = differenceInDays(item?.date, Date.now());
                   let showNoticeIcon;
                   if (diff < 2) {
                     showNoticeIcon = true;
@@ -737,129 +740,129 @@ const Notice = () => {
                     showNoticeIcon = false;
                   }
                   return (
-                    <ScrollView key={ind}>
-                      <TouchableOpacity
-                        style={styles.itemView}
-                        onPress={() => {
-                          navigation.navigate('NoticeDetails');
-                          setStateObject(el);
-                        }}>
-                        {showNoticeIcon ? (
-                          <Image
-                            source={require('../assets/images/new.png')}
-                            style={{
-                              width: responsiveWidth(10),
-                              height: responsiveHeight(5),
-                              alignSelf: 'flex-end',
-                            }}
-                          />
-                        ) : null}
-                        <View
+                    <TouchableOpacity
+                      key={index}
+                      style={styles.itemView}
+                      onPress={() => {
+                        navigation.navigate('NoticeDetails');
+                        setStateObject(item);
+                      }}>
+                      {showNoticeIcon ? (
+                        <Image
+                          source={require('../assets/images/new.png')}
                           style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            alignSelf: 'center',
-                            paddingLeft: responsiveWidth(5),
-                            paddingRight: responsiveWidth(5),
-                          }}>
-                          {el.url ? (
-                            el.type.split('/')[0] === 'image' ? (
-                              <Image
-                                source={{uri: el.url}}
-                                style={{
-                                  width: responsiveWidth(15),
-                                  height: responsiveWidth(15),
-                                  borderRadius: responsiveWidth(5),
-                                }}
-                              />
-                            ) : (
-                              <Image
-                                source={require('../assets/images/pdf.png')}
-                                style={{
-                                  width: responsiveWidth(15),
-                                  height: responsiveWidth(15),
-                                  borderRadius: responsiveWidth(5),
-                                }}
-                              />
-                            )
-                          ) : (
+                            width: responsiveWidth(10),
+                            height: responsiveHeight(5),
+                            alignSelf: 'flex-end',
+                          }}
+                        />
+                      ) : null}
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          alignSelf: 'center',
+                          paddingLeft: responsiveWidth(5),
+                          paddingRight: responsiveWidth(5),
+                        }}>
+                        {item?.url ? (
+                          item?.type.split('/')[0] === 'image' ? (
                             <Image
-                              source={require('../assets/images/notice.png')}
+                              source={{uri: item?.url}}
                               style={{
                                 width: responsiveWidth(15),
                                 height: responsiveWidth(15),
                                 borderRadius: responsiveWidth(5),
                               }}
                             />
-                          )}
-                          <View style={{paddingLeft: 5, paddingRight: 5}}>
-                            <Text
-                              selectable
-                              style={[
-                                styles.label,
-                                {paddingLeft: responsiveWidth(5)},
-                              ]}>
-                              ({ind + 1}) {el.title.slice(0, 30) + '...'}
-                            </Text>
-                            <Text
-                              selectable
-                              style={[
-                                styles.label,
-                                {paddingLeft: responsiveWidth(5)},
-                              ]}>
-                              {el.noticeText.length < 50
-                                ? el.noticeText
-                                : el.noticeText.slice(0, 50) + '...'}
-                            </Text>
-                          </View>
-                        </View>
-
-                        {user.userType === 'teacher' ? (
-                          <View
+                          ) : (
+                            <Image
+                              source={require('../assets/images/pdf.png')}
+                              style={{
+                                width: responsiveWidth(15),
+                                height: responsiveWidth(15),
+                                borderRadius: responsiveWidth(5),
+                              }}
+                            />
+                          )
+                        ) : (
+                          <Image
+                            source={require('../assets/images/notice.png')}
                             style={{
-                              flexDirection: 'row',
-                              justifyContent: 'space-between',
-                              alignItems: 'center',
-                              alignSelf: 'center',
-                              padding: responsiveWidth(2),
-                            }}>
-                            <TouchableOpacity
-                              onPress={() => {
-                                setVisible(true);
-                                setEditID(el.id);
-                                setEditNoticeText(el.noticeText);
-                                setEditTitle(el.title);
-                              }}>
-                              <Text selectable>
-                                <FontAwesome5
-                                  name="edit"
-                                  size={20}
-                                  color="blue"
-                                />
-                              </Text>
-                            </TouchableOpacity>
+                              width: responsiveWidth(15),
+                              height: responsiveWidth(15),
+                              borderRadius: responsiveWidth(5),
+                            }}
+                          />
+                        )}
+                        <View style={{paddingLeft: 5, paddingRight: 5}}>
+                          <Text
+                            selectable
+                            style={[
+                              styles.label,
+                              {paddingLeft: responsiveWidth(5)},
+                            ]}>
+                            ({index + 1}) {item?.title.slice(0, 30) + '...'}
+                          </Text>
+                          <Text
+                            selectable
+                            style={[
+                              styles.label,
+                              {paddingLeft: responsiveWidth(5)},
+                            ]}>
+                            {item?.noticeText.length < 50
+                              ? item?.noticeText
+                              : item?.noticeText.slice(0, 50) + '...'}
+                          </Text>
+                        </View>
+                      </View>
 
-                            <TouchableOpacity
-                              style={{paddingLeft: responsiveHeight(2)}}
-                              onPress={() => {
-                                showConfirmDialog(el);
-                              }}>
-                              <Text selectable>
-                                <Ionicons
-                                  name="trash-bin"
-                                  size={20}
-                                  color="red"
-                                />
-                              </Text>
-                            </TouchableOpacity>
-                          </View>
-                        ) : null}
-                      </TouchableOpacity>
-                    </ScrollView>
+                      {user.userType === 'teacher' ? (
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            alignSelf: 'center',
+                            padding: responsiveWidth(2),
+                          }}>
+                          <TouchableOpacity
+                            onPress={() => {
+                              setVisible(true);
+                              setEditID(item?.id);
+                              setEditNoticeText(item?.noticeText);
+                              setEditTitle(item?.title);
+                            }}>
+                            <Text selectable>
+                              <FontAwesome5
+                                name="edit"
+                                size={20}
+                                color="blue"
+                              />
+                            </Text>
+                          </TouchableOpacity>
+
+                          <TouchableOpacity
+                            style={{paddingLeft: responsiveHeight(2)}}
+                            onPress={() => {
+                              showConfirmDialog(el);
+                            }}>
+                            <Text selectable>
+                              <Ionicons
+                                name="trash-bin"
+                                size={20}
+                                color="red"
+                              />
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      ) : null}
+                    </TouchableOpacity>
                   );
-                })
-              : null}
+                }}
+              />
+            ) : null}
             <View
               style={{
                 flexDirection: 'row',

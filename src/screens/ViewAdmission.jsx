@@ -8,6 +8,7 @@ import {
   Switch,
   BackHandler,
   Image,
+  FlatList,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import React, {useState, useEffect} from 'react';
@@ -454,98 +455,103 @@ export default function ViewAdmission() {
                 }}
               />
             </View>
-            {filteredData.map((student, index) => (
-              <View style={styles.dataView} key={index}>
-                <Text selectable style={styles.bankDataText}>
-                  SL:{index + 1}
-                </Text>
-                <Image
-                  style={{
-                    width: responsiveWidth(35),
-                    height: responsiveWidth(40),
-                    padding: responsiveWidth(2),
-                    margin: responsiveWidth(2),
-                    borderRadius: responsiveWidth(2),
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    alignSelf: 'center',
-                    backgroundColor: 'white',
-                    elevation: 5,
-                  }}
-                  source={{uri: student?.url}}
-                />
-                <Text selectable style={styles.bankDataText}>
-                  Application No: {student?.id}
-                </Text>
-                <Text selectable style={styles.bankDataText}>
-                  STUDENT NAME: {student?.student_eng_name}
-                </Text>
-                <Text selectable style={styles.bankDataText}>
-                  FATHER&#8217;S NAME: {student?.father_eng_name}
-                </Text>
-                <Text selectable style={styles.bankDataText}>
-                  CLASS: {student?.student_addmission_class}
-                </Text>
-                <Text selectable style={styles.bankDataText}>
-                  Date of Birth: {student?.student_birthday}
-                </Text>
-                <Text selectable style={styles.bankDataText}>
-                  VALIDATION:{'\n '}
-                  {calculateAge(
-                    getCurrentDateInput(student?.student_birthday),
-                    student?.student_addmission_class,
-                  )}
-                </Text>
-                <Text selectable style={styles.bankDataText}>
-                  ADMISSION DATE:{'\n '}
-                  {DateValueToSring(student?.student_addmission_dateAndTime)}
-                </Text>
-                {student?.updatedAt && (
-                  <Text selectable style={styles.bankDataText}>
-                    Updated At:
-                    {'\n '} {DateValueToSring(student?.updatedAt)}
-                  </Text>
-                )}
-                <Text selectable style={styles.bankDataText}>
-                  Action:
-                </Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-around',
-                    paddingHorizontal: responsiveWidth(2),
-                    marginBottom: responsiveHeight(1),
-                  }}>
-                  <CustomButton
-                    title={'View'}
-                    color={'darkgreen'}
-                    size={'small'}
-                    onClick={() => {
-                      setStudentDetails(student);
-                      setShowDetails(true);
-                      // navigation.navigate('ViewForm');
-                    }}
-                  />
+            <FlatList
+              data={filteredData}
+              renderItem={({item, index}) => {
+                return (
+                  <View style={styles.dataView} key={index}>
+                    <Text selectable style={styles.bankDataText}>
+                      SL:{index + 1}
+                    </Text>
+                    <Image
+                      style={{
+                        width: responsiveWidth(35),
+                        height: responsiveWidth(40),
+                        padding: responsiveWidth(2),
+                        margin: responsiveWidth(2),
+                        borderRadius: responsiveWidth(2),
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        alignSelf: 'center',
+                        backgroundColor: 'white',
+                        elevation: 5,
+                      }}
+                      source={{uri: item?.url}}
+                    />
+                    <Text selectable style={styles.bankDataText}>
+                      Application No: {item?.id}
+                    </Text>
+                    <Text selectable style={styles.bankDataText}>
+                      STUDENT NAME: {item?.student_eng_name}
+                    </Text>
+                    <Text selectable style={styles.bankDataText}>
+                      FATHER&#8217;S NAME: {item?.father_eng_name}
+                    </Text>
+                    <Text selectable style={styles.bankDataText}>
+                      CLASS: {item?.student_addmission_class}
+                    </Text>
+                    <Text selectable style={styles.bankDataText}>
+                      Date of Birth: {item?.student_birthday}
+                    </Text>
+                    <Text selectable style={styles.bankDataText}>
+                      VALIDATION:{'\n '}
+                      {calculateAge(
+                        getCurrentDateInput(item?.student_birthday),
+                        item?.student_addmission_class,
+                      )}
+                    </Text>
+                    <Text selectable style={styles.bankDataText}>
+                      ADMISSION DATE:{'\n '}
+                      {DateValueToSring(item?.student_addmission_dateAndTime)}
+                    </Text>
+                    {item?.updatedAt && (
+                      <Text selectable style={styles.bankDataText}>
+                        Updated At:
+                        {'\n '} {DateValueToSring(item?.updatedAt)}
+                      </Text>
+                    )}
+                    <Text selectable style={styles.bankDataText}>
+                      Action:
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-around',
+                        paddingHorizontal: responsiveWidth(2),
+                        marginBottom: responsiveHeight(1),
+                      }}>
+                      <CustomButton
+                        title={'View'}
+                        color={'darkgreen'}
+                        size={'small'}
+                        onClick={() => {
+                          setStudentDetails(item);
+                          setShowDetails(true);
+                          // navigation.navigate('ViewForm');
+                        }}
+                      />
 
-                  <CustomButton
-                    title={'Download'}
-                    fontSize={responsiveFontSize(1.3)}
-                    color={'chocolate'}
-                    size={'small'}
-                    onClick={async () => {
-                      const url = `${WEBSITE}/downloadAdmissionForm?id=${student?.id}&mobile=${student?.student_mobile}`;
-                      await Linking.openURL(url);
-                    }}
-                  />
-                  <CustomButton
-                    title={'Delete'}
-                    color={'darkred'}
-                    size={'small'}
-                    onClick={() => showConfirmDialog(student)}
-                  />
-                </View>
-              </View>
-            ))}
+                      <CustomButton
+                        title={'Download'}
+                        fontSize={responsiveFontSize(1.3)}
+                        color={'chocolate'}
+                        size={'small'}
+                        onClick={async () => {
+                          const url = `${WEBSITE}/downloadAdmissionForm?id=${item?.id}&mobile=${item?.student_mobile}`;
+                          await Linking.openURL(url);
+                        }}
+                      />
+                      <CustomButton
+                        title={'Delete'}
+                        color={'darkred'}
+                        size={'small'}
+                        onClick={() => showConfirmDialog(item)}
+                      />
+                    </View>
+                  </View>
+                );
+              }}
+            />
           </View>
         )}
         <Modal
@@ -698,13 +704,13 @@ export default function ViewAdmission() {
                           {student_previous_class_year}
                         </Text>
                         <Text style={[styles.paraText]}>
-                        ছাত্র/ছাত্রীর পূর্বের স্টুডেন্ট আইডি:{' '}
-                        {student_previous_student_id}
-                      </Text>
-                      <Text style={styles.paraText}>
-                        ছাত্র/ছাত্রীর পূর্বের বিদ্যালয়ের নাম ও ঠিকানা:{' '}
-                        {student_previous_school}
-                      </Text>
+                          ছাত্র/ছাত্রীর পূর্বের স্টুডেন্ট আইডি:{' '}
+                          {student_previous_student_id}
+                        </Text>
+                        <Text style={styles.paraText}>
+                          ছাত্র/ছাত্রীর পূর্বের বিদ্যালয়ের নাম ও ঠিকানা:{' '}
+                          {student_previous_school}
+                        </Text>
                       </View>
                     )}
                     {updatedAt !== undefined && (
