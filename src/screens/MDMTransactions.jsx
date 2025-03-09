@@ -1060,7 +1060,7 @@ export default function MDMTransactions() {
                     setPryCB(pryOB + parsedAmount);
                   } else {
                     setPryRC('');
-                    setPpCB(pryOB);
+                    setPryCB(pryOB);
                   }
                 }}
               />
@@ -1076,10 +1076,10 @@ export default function MDMTransactions() {
                     const parsedAmount = parseFloat(e);
 
                     setPryEX(parsedAmount);
-                    setPpCB(pryOB + pryRC - parsedAmount);
+                    setPryCB(round2dec(pryOB + pryRC - parsedAmount));
                   } else {
                     setPryEX('');
-                    setPpCB(pryRC + pryOB);
+                    setPryCB(pryRC + pryOB);
                   }
                 }}
               />
@@ -1439,16 +1439,19 @@ export default function MDMTransactions() {
                     setEditTransaction({
                       ...editTransaction,
                       pryEX: parsedAmount,
-                      pryCB:
+                      pryCB: round2dec(
                         editTransaction.pryOB +
-                        editTransaction.pryRC -
-                        parsedAmount,
+                          editTransaction.pryRC -
+                          parsedAmount,
+                      ),
                     });
                   } else {
                     setEditTransaction({
                       ...editTransaction,
                       pryEX: '',
-                      pryCB: editTransaction.pryOB + editTransaction.pryRC,
+                      pryCB: round2dec(
+                        editTransaction.pryOB + editTransaction.pryRC,
+                      ),
                     });
                   }
                 }}

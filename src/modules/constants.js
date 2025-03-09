@@ -84,7 +84,7 @@ export const classWiseAge = [
   {className: 'CLASS V', benClassName: 'পঞ্চম শ্রেনী', age: 10},
 ];
 export const TELEGRAM_TEACHER_GROUP = 'https://t.me/+LZsOjnE9mBAxZjI9';
-export const appVersion = 1.15;
+export const appVersion = 1.16;
 export const AppURL =
   'https://drive.google.com/file/d/1FDcOHPETUb5iOA32SnOEUqPUiUkrljKE/view?usp=drive_link';
 export const WEBSITE = `https://uspry.vercel.app`;

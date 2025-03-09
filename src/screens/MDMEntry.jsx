@@ -794,10 +794,10 @@ export default function MDMEntry() {
         .set({
           id: date,
           date: date,
-          riceOB: riceOB,
-          riceGiven: riceGiven === '' ? 0 : riceGiven,
-          riceExpend: riceExpend,
-          riceCB: riceCB,
+          riceOB: parseFloat(riceOB),
+          riceGiven: riceGiven === '' ? 0 : parseFloat(riceGiven),
+          riceExpend: parseFloat(riceExpend),
+          riceCB: parseFloat(riceCB),
         })
         .then(() => {
           showToast('success', 'Rice Data added successfully');
@@ -809,10 +809,10 @@ export default function MDMEntry() {
             {
               id: date,
               date: date,
-              riceOB: riceOB,
-              riceGiven: riceGiven === '' ? 0 : riceGiven,
-              riceExpend: riceExpend,
-              riceCB: riceCB,
+              riceOB: parseFloat(riceOB),
+              riceGiven: riceGiven === '' ? 0 : parseFloat(riceGiven),
+              riceExpend: parseFloat(riceExpend),
+              riceCB: parseFloat(riceCB),
             },
           ].sort(
             (a, b) =>
@@ -1320,7 +1320,7 @@ export default function MDMEntry() {
               type={'number-pad'}
               placeholder={`Max Limit: ${STUDENTS?.PRIMARY_STUDENTS}`}
               value={pry.toString()}
-              editable={STUDENTS?.PRIMARY_STUDENTS!== undefined}
+              editable={STUDENTS?.PRIMARY_STUDENTS !== undefined}
               onChangeText={text => {
                 if (text.length) {
                   if (text > STUDENTS?.PRIMARY_STUDENTS) {
@@ -1640,7 +1640,7 @@ export default function MDMEntry() {
                 }}>
                 <Text
                   style={[styles.title, {marginVertical: responsiveHeight(1)}]}>
-                  Mothly MDM Report of {monthText} Month
+                  Mothly MDM Report of {monthText}' {selectedYear}
                 </Text>
                 {showDownloadButton && (
                   <CustomButton
@@ -1694,8 +1694,8 @@ export default function MDMEntry() {
                                     <Text
                                       selectable
                                       style={styles.bankDataText}>
-                                      Rice Received:-
-                                      {filteredRiceData[index]?.riceGiven},{' '}
+                                      Rice Received:{' '}
+                                      {filteredRiceData[index]?.riceGiven} Kg.,
                                     </Text>
                                   )}
                                   <Text selectable style={styles.bankDataText}>
@@ -2486,9 +2486,9 @@ export default function MDMEntry() {
               value={riceOB.toString()}
               onChangeText={text => {
                 if (text !== '') {
-                  setRiceOB(parseInt(text));
+                  setRiceOB(text);
                   setRiceCB(
-                    parseInt(text) +
+                    parseFloat(text) +
                       (riceGiven === '' ? 0 : riceGiven) -
                       (riceExpend === '' ? 0 : riceExpend),
                   );
@@ -2504,11 +2504,11 @@ export default function MDMEntry() {
               value={riceExpend.toString()}
               onChangeText={text => {
                 if (text !== '') {
-                  setRiceExpend(parseInt(text));
+                  setRiceExpend(text);
                   setRiceCB(
                     riceOB -
                       (riceGiven === '' ? 0 : riceGiven) -
-                      parseInt(text),
+                      parseFloat(text),
                   );
                 } else {
                   setRiceExpend('');
@@ -2523,8 +2523,8 @@ export default function MDMEntry() {
               value={riceGiven.toString()}
               onChangeText={text => {
                 if (text !== '') {
-                  setRiceGiven(parseInt(text));
-                  setRiceCB(riceOB + parseInt(text) - riceExpend);
+                  setRiceGiven(text);
+                  setRiceCB(riceOB + parseFloat(text) - riceExpend);
                 } else {
                   setRiceGiven('');
                   setRiceCB(riceOB - riceExpend);
@@ -2539,7 +2539,7 @@ export default function MDMEntry() {
               value={riceCB.toString()}
               onChangeText={text => {
                 if (text !== '') {
-                  setRiceCB(parseInt(text));
+                  setRiceCB(text);
                 } else {
                   setRiceCB('');
                 }
