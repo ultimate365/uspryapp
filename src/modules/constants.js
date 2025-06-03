@@ -9,7 +9,7 @@ export const PREV_MDM_COST = 5.45;
 export const MDM_COST = 6.19;
 export const STUDENTRECORD = [
   {
-    YEAR: "2024",
+    YEAR: '2024',
     PP_STUDENTS: 6,
     PRIMARY_STUDENTS: 40,
     PRIMARY_BOYS: 22,
@@ -17,7 +17,7 @@ export const STUDENTRECORD = [
     TOTAL_STUDENTS: 46,
   },
   {
-    YEAR: "2025",
+    YEAR: '2025',
     PP_STUDENTS: 8,
     PRIMARY_STUDENTS: 37,
     PRIMARY_BOYS: 20,
@@ -49,7 +49,7 @@ export const CCH_NAME = [
   {name: 'LAKSHMI DAS', gender: 'FEMALE', cast: 'OBC', payment: 'BANK'},
   ,
 ];
-export const UDISE_CODE = "19160213201";
+export const UDISE_CODE = '19160213201';
 export const HOI_MOBILE_NO = '9933684468';
 export const NGO_SHG = 'SUPRAVAT+DISHARI';
 const THIS_YEAR = new Date().getFullYear();
@@ -84,9 +84,9 @@ export const classWiseAge = [
   {className: 'CLASS V', benClassName: 'পঞ্চম শ্রেনী', age: 10},
 ];
 export const TELEGRAM_TEACHER_GROUP = 'https://t.me/+LZsOjnE9mBAxZjI9';
-export const appVersion = 1.16;
+export const appVersion = 1.17;
 export const AppURL =
   'https://drive.google.com/file/d/1FDcOHPETUb5iOA32SnOEUqPUiUkrljKE/view?usp=drive_link';
 export const WEBSITE = `https://uspry.vercel.app`;
 export const ADMISSION_STATUS = 'PY5G28aVQ3D3Q310GAKV';
-export const SCHOOL_EMAIL = "usprys@gmail.com";
+export const SCHOOL_EMAIL = 'usprys@gmail.com';

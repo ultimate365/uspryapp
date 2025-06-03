@@ -12,6 +12,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Entypo from 'react-native-vector-icons/Entypo';
 import {THEME_COLOR} from '../utils/Colors';
 
 import {
@@ -175,6 +176,36 @@ const SideNav = () => {
                 },
               ]}>
               Notice
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setActiveTab(16);
+              navigation.navigate('Home');
+              setNavState(false);
+            }}
+            style={{
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+              paddingVertical: responsiveWidth(2),
+              flexDirection: 'row',
+              width: responsiveWidth(55),
+              paddingLeft: responsiveWidth(2),
+            }}>
+            <Entypo
+              name="download"
+              size={20}
+              color={activeTab == 16 ? 'purple' : THEME_COLOR}
+            />
+            <Text
+              style={[
+                styles.bottomText,
+                {
+                  color: activeTab == 16 ? 'purple' : THEME_COLOR,
+                  textAlign: 'center',
+                },
+              ]}>
+              Downloads
             </Text>
           </TouchableOpacity>
         </View>

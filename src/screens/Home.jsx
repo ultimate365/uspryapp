@@ -40,6 +40,7 @@ import StudentList from './StudentList';
 import Result from './Result';
 import TeachersReturn from './TeachersReturn';
 import AgeCalculator from './AgeCalculator';
+import Downloads from './Downloads';
 
 export default function Home() {
   const {state, setActiveTab, activeTab} = useGlobalContext();
@@ -113,6 +114,8 @@ export default function Home() {
             <TeachersReturn />
           ) : activeTab === 15 ? (
             <AgeCalculator />
+          ) : activeTab === 16 ? (
+            <Downloads />
           ) : null}
         </View>
         <SideBar />

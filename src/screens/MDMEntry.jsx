@@ -30,6 +30,7 @@ import {
   WEBSITE,
   PREV_MDM_COST,
   STUDENTRECORD,
+  VILL,
 } from '../modules/constants';
 import {showToast} from '../modules/Toaster';
 import {
@@ -225,6 +226,7 @@ export default function MDMEntry() {
     id: '2025',
   });
   const [showDownloadButton, setShowDownloadButton] = useState(false);
+  const [showBlankBtn, setShowBlankBtn] = useState(false);
   const calculateAgeOnSameDay = (event, selectedDate) => {
     const currentSelectedDate = selectedDate || date;
     setOpen('');
@@ -686,6 +688,18 @@ export default function MDMEntry() {
       setFilteredData(x);
       setMoreFilteredData(x);
       setEntryMonths(uniqArray(y));
+      const findBlankEntry = monthlyReportState.filter(
+        entry =>
+          entry?.id ===
+          `${
+            monthNamesWithIndex[new Date().getMonth()].monthName
+          }-${selectedYear}`,
+      );
+      if (findBlankEntry?.length > 0) {
+        setShowBlankBtn(true);
+      } else {
+        setShowBlankBtn(false);
+      }
     } else {
       setFilteredData([]);
       setSelectedYear('');
@@ -717,6 +731,7 @@ export default function MDMEntry() {
     const findEntry = monthlyReportState.filter(
       entry => entry?.month === month.monthName,
     );
+
     if (findEntry?.length > 0) {
       setThisMonthlyData(findEntry[0]);
       setShowDownloadButton(true);
@@ -725,6 +740,7 @@ export default function MDMEntry() {
       setShowDownloadButton(false);
       console.log('entry not found');
     }
+
     setFilteredData(x);
     setFilteredRiceData(
       y.sort(
@@ -906,7 +922,6 @@ export default function MDMEntry() {
         .then(() => {
           showToast('success', 'Monthly MDM Data Submitted successfully');
           setLoader(false);
-          setMonthlyReportState();
           let z = monthlyReportState.filter(item => item.id !== monthYearID);
           z = [...z, entry];
           setMonthlyReportState(sortMonthwise(z));
@@ -1630,6 +1645,46 @@ export default function MDMEntry() {
                     ))}
                   </View>
                 )}
+                {new Date().getDate() >= 20 &&
+                  moreFilteredData.filter(
+                    m => m.date.split('-')[1] === new Date().getMonth() + 1,
+                  ).length === 0 && (
+                    <View>
+                      <CustomButton
+                        title={'Blank Entry'}
+                        size={'small'}
+                        color={'black'}
+                        fontSize={responsiveFontSize(1.5)}
+                        onClick={() => navigation.navigate('BlankMDMEntry')}
+                      />
+                      {showBlankBtn && (
+                        <CustomButton
+                          marginTop={responsiveHeight(1)}
+                          color={'blueviolet'}
+                          title={`Download ${
+                            monthNamesWithIndex[new Date().getMonth()].monthName
+                          }-${selectedYear} MDM PDF`}
+                          onClick={async () => {
+                            const data = {
+                              thisMonthlyData: monthlyReportState.filter(
+                                entry =>
+                                  entry?.id ===
+                                  `${
+                                    monthNamesWithIndex[new Date().getMonth()]
+                                      .monthName
+                                  }-${selectedYear}`,
+                              )[0],
+                            };
+                            await Linking.openURL(
+                              `${WEBSITE}/downloadMDMReport?data=${JSON.stringify(
+                                data,
+                              )}`,
+                            );
+                          }}
+                        />
+                      )}
+                    </View>
+                  )}
               </View>
             )}
 
@@ -1663,6 +1718,10 @@ export default function MDMEntry() {
                   <FlatList
                     data={filteredData}
                     renderItem={({item, index}) => {
+                      const findRiceData = filteredRiceData.filter(
+                        r => r.id === item.id,
+                      );
+                      const foundRData = findRiceData[0];
                       return (
                         <React.Fragment key={index}>
                           <View style={styles.dataView}>
@@ -1684,27 +1743,24 @@ export default function MDMEntry() {
                               <Text selectable style={styles.bankDataText}>
                                 Primary: {item?.pry}
                               </Text>
-                              {filteredRiceData[index]?.riceExpend > 0 && (
+                              {findRiceData.length > 0 && (
                                 <View>
                                   <Text selectable style={styles.bankDataText}>
-                                    Rice Opening:{' '}
-                                    {filteredRiceData[index]?.riceOB} Kg.
+                                    Rice Opening: {foundRData?.riceOB} Kg.
                                   </Text>
-                                  {filteredRiceData[index]?.riceGiven > 0 && (
+                                  {foundRData?.riceGiven > 0 && (
                                     <Text
                                       selectable
                                       style={styles.bankDataText}>
-                                      Rice Received:{' '}
-                                      {filteredRiceData[index]?.riceGiven} Kg.,
+                                      Rice Received: {foundRData?.riceGiven}{' '}
+                                      Kg.,
                                     </Text>
                                   )}
                                   <Text selectable style={styles.bankDataText}>
-                                    Rice Expenses:{' '}
-                                    {filteredRiceData[index]?.riceExpend} Kg.
+                                    Rice Expenses: {foundRData?.riceExpend} Kg.
                                   </Text>
                                   <Text selectable style={styles.bankDataText}>
-                                    Rice Closing:{' '}
-                                    {filteredRiceData[index]?.riceCB} Kg.
+                                    Rice Closing: {foundRData?.riceCB} Kg.
                                   </Text>
                                 </View>
                               )}

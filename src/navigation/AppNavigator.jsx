@@ -7,6 +7,7 @@ import SignOut from '../screens/SignOut';
 import VerifyLogin from '../screens/VerifyLogin';
 import NoticeDetails from '../screens/NoticeDetails';
 import ViewForm from '../screens/ViewForm';
+import BlankMDMEntry from '../screens/BlankMDMEntry';
 const Stack = createStackNavigator();
 
 function AppNavigator() {
@@ -46,6 +47,11 @@ function AppNavigator() {
         <Stack.Screen
           name="ViewForm"
           component={ViewForm}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="BlankMDMEntry"
+          component={BlankMDMEntry}
           options={{headerShown: false}}
         />
       </Stack.Navigator>
