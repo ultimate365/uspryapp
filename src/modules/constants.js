@@ -7,6 +7,7 @@ export const HRA = 0.12;
 export const BONUS = 5800;
 export const PREV_MDM_COST = 5.45;
 export const MDM_COST = 6.19;
+export const MDM_COST_MAY_2025 = 6.78;
 export const STUDENTRECORD = [
   {
     YEAR: "2024",
