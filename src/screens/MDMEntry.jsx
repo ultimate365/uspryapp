@@ -22,7 +22,8 @@ import {
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
 import {useGlobalContext} from '../context/Store';
-import {  MDM_COST_MAY_2025,
+import {
+  MDM_COST_MAY_2025,
   MDM_COST,
   PP_STUDENTS,
   PRIMARY_STUDENTS,
@@ -771,14 +772,15 @@ export default function MDMEntry() {
     if (parseInt(selectedYear) <= 2024 && parseInt(entryMonth) <= 11) {
       setThisMonthMDMAllowance(PREV_MDM_COST);
       mdmCost = PREV_MDM_COST;
-    } else {
-      if (parseInt(selectedYear) === 2024 && parseInt(entryMonth) > 11) {
-        setThisMonthMDMAllowance(MDM_COST);
-        mdmCost = MDM_COST;
-      } else if (parseInt(selectedYear) >= 2025 && parseInt(entryMonth) >= 5) {
-        setThisMonthMDMAllowance(MDM_COST_MAY_2025);
-        mdmCost = MDM_COST_MAY_2025;
-      }
+    } else if (parseInt(selectedYear) === 2024 && parseInt(entryMonth) === 12) {
+      setThisMonthMDMAllowance(MDM_COST);
+      mdmCost = MDM_COST;
+    } else if (parseInt(selectedYear) === 2025 && parseInt(entryMonth) <= 4) {
+      setThisMonthMDMAllowance(MDM_COST);
+      mdmCost = MDM_COST;
+    } else if (parseInt(selectedYear) >= 2025 && parseInt(entryMonth) >= 5) {
+      setThisMonthMDMAllowance(MDM_COST_MAY_2025);
+      mdmCost = MDM_COST_MAY_2025;
     }
     setPpTotalMeal(ppTotal);
     setPryTotalMeal(pryTotal);
