@@ -1654,7 +1654,7 @@ export default function MDMEntry() {
                 )}
                 {new Date().getDate() >= 20 &&
                   moreFilteredData.filter(
-                    m => m.date.split('-')[1] === new Date().getMonth() + 1,
+                    m => m.date.split('-')[1] == new Date().getMonth() + 1,
                   ).length === 0 && (
                     <View>
                       <CustomButton
